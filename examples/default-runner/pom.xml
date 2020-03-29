@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>examples</artifactId>
+        <groupId>org.scenario</groupId>
+        <version>0.0.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>default-runner</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-plugin.version}</version>
+
+                <configuration>
+                    <executable>java</executable>
+
+                    <environmentVariables>
+                        <AUTHGUARD_OTA_USERNAME>admin</AUTHGUARD_OTA_USERNAME>
+                        <AUTHGUARD_OTA_PASSWORD>password</AUTHGUARD_OTA_PASSWORD>
+                    </environmentVariables>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+
+                        <configuration>
+                            <executable>java</executable>
+
+                            <classpathScope>test</classpathScope>
+
+                            <arguments>
+                                <argument>-classpath</argument>
+
+                                <!-- automatically creates the classpath using all project dependencies,
+                                     also adding the project build directory -->
+                                <classpath/>
+
+                                <argument>org.scenario.runners.DefaultTestsRunner</argument>
+                                <argument>org.scenario.examples.defaultrunner</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
