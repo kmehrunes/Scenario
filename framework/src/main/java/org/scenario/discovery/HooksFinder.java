@@ -1,6 +1,9 @@
-package org.scenario.definitions;
+package org.scenario.discovery;
 
 import org.scenario.annotations.*;
+import org.scenario.definitions.ExecutableStep;
+import org.scenario.definitions.Hook;
+import org.scenario.definitions.Hooks;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

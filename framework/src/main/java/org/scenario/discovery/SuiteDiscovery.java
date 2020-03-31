@@ -1,4 +1,4 @@
-package org.scenario.runners;
+package org.scenario.discovery;
 
 
 import org.scenario.annotations.SuiteDefinition;

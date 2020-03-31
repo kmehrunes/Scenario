@@ -1,6 +1,7 @@
 package org.scenario.runners;
 
 import org.scenario.definitions.Suite;
+import org.scenario.discovery.SuiteDiscovery;
 
 import java.util.List;
 

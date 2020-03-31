@@ -1,23 +1,23 @@
 package org.scenario.examples.defaultrunner;
 
+import org.scenario.annotations.ScenarioDefinition;
 import org.scenario.annotations.Step;
 import org.scenario.definitions.Scenario;
 import org.scenario.definitions.ScenarioFlow;
 
-public class HeadstrongScenario extends Scenario {
+public class HeadstrongScenario {
 
-    protected HeadstrongScenario() {
-        super("Headstrong");
-    }
-
-    @Override
-    public ScenarioFlow flow() {
-        return new ScenarioFlow.Builder()
-                .instance(this)
-                .step("backOff")
-                .step("headstrong")
-                .step("youAreWrong")
-                .step("whereYouBelong")
+    @ScenarioDefinition
+    public Scenario scenario() {
+        return new Scenario.Builder()
+                .name("Headstrong")
+                .flow(new ScenarioFlow.Builder()
+                        .instance(this)
+                        .step("backOff")
+                        .step("headstrong")
+                        .step("youAreWrong")
+                        .step("whereYouBelong")
+                        .build())
                 .build();
     }
 

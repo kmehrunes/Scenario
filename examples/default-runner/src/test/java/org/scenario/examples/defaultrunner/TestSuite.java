@@ -10,7 +10,7 @@ public class TestSuite {
         return new Suite.Builder()
                 .name("2000's rock and metal")
                 .loadHooks(new DefaultOutputHooks())
-                .scenario(new HeadstrongScenario())
+                .loadScenarios(new HeadstrongScenario())
                 .build();
     }
 }
