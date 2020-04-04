@@ -2,11 +2,9 @@ package org.scenario.runners;
 
 import org.scenario.annotations.Step;
 import org.scenario.definitions.*;
-import org.scenario.util.Output;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,49 +16,31 @@ public class StepRunner {
         this.hooks = hooks;
     }
 
-    public List<Failure> runStep(final StepExecutor executor, final ExecutableStep step, final ScenarioContext context) {
-        final List<Failure> beforeStepResults = runHooks(executor, Hooks.Scope.BEFORE_STEP, step, context,
+    public Failures runStep(final StepExecutor executor, final ExecutableStep step, final ScenarioContext context) {
+        final HooksRunner hooksRunner = new HooksRunner(hooks, executor);
+        final Failures beforeStepResults = hooksRunner.run(Hooks.Scope.BEFORE_STEP, prepareStepContext(step, context),
                 null, true);
 
-        if (!beforeStepResults.isEmpty()) {
+        if (!beforeStepResults.asList().isEmpty()) {
             return beforeStepResults;
         }
 
         Optional<Failure> failure = invokeStep(step, context);
 
-        List<Failure> afterStepFailures = runHooks(executor, Hooks.Scope.AFTER_STEP, step, context, failure.orElse(null), false);
+        Failures afterStepFailures = hooksRunner.run(Hooks.Scope.AFTER_STEP, prepareStepContext(step, context),
+                failure.map(Collections::singletonList).map(Failures::new).orElse(null), true);
 
-        return Stream.concat(afterStepFailures.stream(), failure.stream())
-                .collect(Collectors.toList());
+        return new Failures(Stream.concat(afterStepFailures.asList().stream(), failure.stream())
+                .collect(Collectors.toList()));
     }
 
-    private List<Failure> runHooks(final StepExecutor executor, final Hooks.Scope scope,
-                                   final ExecutableStep step, final ScenarioContext scenarioContext,
-                                   final Failure stepFailure,
-                                   final boolean abortOnFailure) {
-        final List<Failure> failures = new ArrayList<>();
-
-        for (final ExecutableStep beforeStep : hooks.executableSteps(scope)) {
-            final ExecutionContext executionContext = new ExecutionContext.Builder()
-                    .add(step)
-                    .add(step.method())
-                    .add(step.method().getAnnotation(Step.class))
-                    .add(scenarioContext)
-                    .add(stepFailure, Failure.class)
-                    .build();
-
-            final Optional<Failure> failure = executor.execute(beforeStep, executionContext);
-
-            if (failure.isPresent()) {
-                failures.add(failure.get());
-
-                if (abortOnFailure) {
-                    break;
-                }
-            }
-        }
-
-        return failures;
+    private ExecutionContext.Builder prepareStepContext(final ExecutableStep step,
+                                                        final ScenarioContext scenarioContext) {
+        return new ExecutionContext.Builder()
+                .add(step)
+                .add(step.method())
+                .add(step.method().getAnnotation(Step.class))
+                .add(scenarioContext);
     }
 
     private Optional<Failure> invokeStep(final ExecutableStep step, final ScenarioContext context) {

@@ -12,56 +12,23 @@ public class SuiteRunner {
         final StepExecutor stepExecutor = new StepExecutor();
         final ScenarioRunner scenarioRunner = new ScenarioRunner(suite.hooks(), stepRunner);
 
-        final Map<String, Object> globals = new HashMap<>();
-        final List<Failure> failures = new ArrayList<>();
+        final HooksRunner hooksRunner = new HooksRunner(suite.hooks(), stepExecutor);
 
-        if (!executeBeforeSuiteHooks(stepExecutor, suite, globals).isEmpty()) {
-            Output.error.println("An error happened during suite setup steps. The suite will be ignored");
+        final Map<String, Object> globals = new HashMap<>();
+
+        final Failures beforeSuiteFailures = hooksRunner.run(Hooks.Scope.BEFORE_SUITE, suite,
+                new ScenarioContext(globals), null, true);
+
+        if (!beforeSuiteFailures.asList().isEmpty()) {
             return;
         }
 
-        suite.scenarios().forEach(scenario -> failures.addAll(scenarioRunner.run(scenario, globals)));
-
-        executeAfterSuiteHooks(stepExecutor, suite, globals, failures);
-    }
-
-    private List<Failure> executeBeforeSuiteHooks(final StepExecutor executor, final Suite suite, final Map<String, Object> globals) {
-        return executeHooks(executor, suite, Hooks.Scope.BEFORE_SUITE, globals, null, true);
-    }
-
-    private void executeAfterSuiteHooks(final StepExecutor executor, final Suite suite, final Map<String, Object> globals,
-                                        final List<Failure> scenariosFailures) {
-        executeHooks(executor, suite, Hooks.Scope.AFTER_SUITE, globals, scenariosFailures, false);
-    }
-
-    private List<Failure> executeHooks(final StepExecutor executor, final Suite suite, final Hooks.Scope scope,
-                                       final Map<String, Object> globals, final List<Failure> scenariosFailures,
-                                       boolean abortOnFailure) {
         final List<Failure> failures = new ArrayList<>();
 
-        for (final ExecutableStep step : suite.hooks().executableSteps(scope)) {
-            final ExecutionContext executionContext = new ExecutionContext.Builder()
-                    .add(suite)
-                    .add(new ScenarioContext(globals))
-                    .add(scenariosFailures, List.class)
-                    .build();
+        suite.scenarios().forEach(scenario -> failures.addAll(scenarioRunner.run(scenario, globals).asList()));
 
-            final Optional<Failure> failure = executor.execute(step, executionContext);
-
-            if (failure.isPresent()) {
-                Output.error.println((step.description().isEmpty() ? step.name() : step.description())
-                        + " Failed with exception " + failure.get().getCause());
-
-                failure.get().getCause().printStackTrace();
-
-                if (abortOnFailure) {
-                    return Collections.singletonList(failure.get());
-                } else {
-                    failures.add(failure.get());
-                }
-            }
-        }
-
-        return failures;
+        hooksRunner.run(Hooks.Scope.AFTER_SUITE, suite, new ScenarioContext(globals),
+                new Failures(failures), false);
     }
+
 }
