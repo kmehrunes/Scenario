@@ -1,6 +1,7 @@
 package org.scenario.definitions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class Hooks {
@@ -36,6 +37,17 @@ public final class Hooks {
         this.afterScenario = afterScenario;
         this.beforeStep = beforeStep;
         this.afterStep = afterStep;
+    }
+
+    public static Hooks empty() {
+        return new Hooks(
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
     }
 
     public List<ExecutableStep> executableSteps(final Hooks.Scope scope) {

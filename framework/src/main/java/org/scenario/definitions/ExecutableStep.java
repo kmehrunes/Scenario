@@ -32,7 +32,7 @@ public class ExecutableStep {
         return instance;
     }
 
-    public Object execute(final Object... params) throws InvocationTargetException, IllegalAccessException {
-        return method.invoke(instance, params);
+    public void execute(final Object... args) throws InvocationTargetException, IllegalAccessException {
+        method.invoke(instance, args);
     }
 }

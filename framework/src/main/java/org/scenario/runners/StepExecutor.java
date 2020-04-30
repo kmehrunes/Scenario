@@ -2,6 +2,7 @@ package org.scenario.runners;
 
 import org.scenario.definitions.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public class StepExecutor {
@@ -10,7 +11,9 @@ public class StepExecutor {
             final Object[] args = prepareArgs(executableStep, executionContext);
             executableStep.execute(args);
             return Optional.empty();
-        } catch (final Exception e) {
+        } catch (final InvocationTargetException e) {
+            return Optional.of(new Failure(executableStep, e.getCause()));
+        } catch (final Throwable e) {
             return Optional.of(new Failure(executableStep, e));
         }
     }
