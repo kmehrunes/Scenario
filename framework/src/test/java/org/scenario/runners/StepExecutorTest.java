@@ -2,6 +2,7 @@ package org.scenario.runners;
 
 import org.junit.jupiter.api.Test;
 import org.scenario.annotations.BeforeStep;
+import org.scenario.annotations.Name;
 import org.scenario.annotations.Step;
 import org.scenario.definitions.ExecutableStep;
 import org.scenario.definitions.ExecutionContext;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class StepExecutorTest {
 
     @BeforeStep
-    public void testStep(final Step step, final ScenarioContext scenarioContext, final Method method, final Failure failure) {
+    public void beforeStep(final Step step, final ScenarioContext scenarioContext, final Method method, final Failure failure) {
         Objects.requireNonNull(step);
         Objects.requireNonNull(scenarioContext);
         Objects.requireNonNull(method);
@@ -26,15 +27,16 @@ class StepExecutorTest {
         assertNull(failure);
     }
 
-    @Step(description = "Run a step")
-    public void step() {
+    @Step
+    public void step() { }
 
-    }
+    @Step
+    public void stepWithParam(final @Name("url") String url) { }
 
     @Test
     void prepareArgs() throws NoSuchMethodException {
         final Method stepMethod = this.getClass().getMethod("step");
-        final Method beforeStepMethod = this.getClass().getMethod("testStep", Step.class, ScenarioContext.class,
+        final Method beforeStepMethod = this.getClass().getMethod("beforeStep", Step.class, ScenarioContext.class,
                 Method.class, Failure.class);
         final Step stepAnnotation = stepMethod.getAnnotation(Step.class);
         final ScenarioContext scenarioContext = new ScenarioContext(new HashMap<>());
@@ -57,6 +59,28 @@ class StepExecutorTest {
                 scenarioContext,
                 stepMethod,
                 null
+        };
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    void prepareNamedArgs() throws NoSuchMethodException {
+        final Method stepMethod = this.getClass().getMethod("stepWithParam", String.class);
+
+        final ExecutionContext executionContext = new ExecutionContext.Builder()
+                .add(stepMethod)
+                .addNamed("url", "url-value")
+                .build();
+
+        final ExecutableStep executableStep = new ExecutableStep(stepMethod.getName(),
+                "", stepMethod, this);
+
+        final StepExecutor executor = new StepExecutor();
+
+        final Object[] actual = executor.prepareArgs(executableStep, executionContext);
+        final Object[] expected = new Object[] {
+                "url-value"
         };
 
         assertArrayEquals(expected, actual);

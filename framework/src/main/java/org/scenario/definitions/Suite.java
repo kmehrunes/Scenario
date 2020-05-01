@@ -11,13 +11,15 @@ public final class Suite {
     private final String description;
     private final Hooks hooks;
     private final List<Scenario> scenarios;
+    private final ExecutionContext.Builder executionContext;
 
     public Suite(final String name, final String description, final Hooks hooks,
-                 final List<Scenario> scenarios) {
+                 final List<Scenario> scenarios, final ExecutionContext.Builder executionContext) {
         this.name = name;
         this.description = description;
         this.hooks = hooks;
         this.scenarios = scenarios;
+        this.executionContext = executionContext;
     }
 
     public List<Scenario> scenarios() {
@@ -36,6 +38,10 @@ public final class Suite {
         return name;
     }
 
+    public ExecutionContext.Builder executionContext() {
+        return executionContext;
+    }
+
     public static class Builder {
         private String name;
         private String description;
@@ -45,12 +51,16 @@ public final class Suite {
         private final HooksFinder hooksFinder;
         private final ScenarioDiscovery scenarioDiscovery;
 
+        private final ExecutionContext.Builder executionContext;
+
         public Builder() {
             this.hooksBuilder = new Hooks.Builder();
             this.scenarios = new ArrayList<>();
 
             this.hooksFinder = new HooksFinder();
             this.scenarioDiscovery = new ScenarioDiscovery();
+
+            this.executionContext = new ExecutionContext.Builder();
         }
 
         public Builder name(final String name) {
@@ -80,8 +90,20 @@ public final class Suite {
             return this;
         }
 
+        public Builder addToContext(final Object object) {
+            executionContext.add(object);
+
+            return this;
+        }
+
+        public Builder addToContext(final String name, final Object object) {
+            executionContext.addNamed(name, object);
+
+            return this;
+        }
+
         public Suite build() {
-            return new Suite(name, description, hooksBuilder.build(), scenarios);
+            return new Suite(name, description, hooksBuilder.build(), scenarios, executionContext);
         }
     }
 }
