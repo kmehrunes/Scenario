@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public final class HooksRunner {
+final class HooksRunner {
     private final Hooks hooks;
     private final StepExecutor executor;
 

@@ -2,7 +2,9 @@ package org.scenario.runners;
 
 import org.scenario.definitions.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 class ScenarioRunner {

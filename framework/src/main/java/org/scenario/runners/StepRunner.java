@@ -11,14 +11,14 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class StepRunner {
+class StepRunner {
     private final Hooks hooks;
 
-    public StepRunner(final Hooks hooks) {
+    StepRunner(final Hooks hooks) {
         this.hooks = hooks;
     }
 
-    public Failures runStep(final StepExecutor executor, final ExecutableStep step, final ScenarioContext context) {
+    Failures runStep(final StepExecutor executor, final ExecutableStep step, final ScenarioContext context) {
         final HooksRunner hooksRunner = new HooksRunner(hooks, executor);
         final Failures beforeStepResults = hooksRunner.run(Hooks.Scope.BEFORE_STEP, prepareStepContext(step, context),
                 null, true);

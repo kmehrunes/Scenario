@@ -1,12 +1,14 @@
 package org.scenario.runners;
 
-import org.scenario.definitions.*;
+import org.scenario.definitions.ExecutableStep;
+import org.scenario.definitions.ExecutionContext;
+import org.scenario.definitions.Failure;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-public class StepExecutor {
-    public Optional<Failure> execute(final ExecutableStep executableStep, final ExecutionContext executionContext) {
+class StepExecutor {
+    Optional<Failure> execute(final ExecutableStep executableStep, final ExecutionContext executionContext) {
         try {
             final Object[] args = prepareArgs(executableStep, executionContext);
             executableStep.execute(args);
