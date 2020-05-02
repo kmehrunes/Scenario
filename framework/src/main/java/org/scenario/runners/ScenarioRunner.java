@@ -16,31 +16,33 @@ class ScenarioRunner {
         this.stepRunner = stepRunner;
     }
 
-    Failures run(final Scenario scenario, final Map<String, Object> globals) {
-        return run(scenario, new ScenarioContext(globals));
+    Failures run(final Scenario scenario, final Map<String, Object> globals, final ExecutionContext executionContext) {
+        return run(scenario, new ScenarioContext(globals), executionContext);
     }
 
-    private Failures run(final Scenario scenario, final ScenarioContext context) {
+    private Failures run(final Scenario scenario, final ScenarioContext scenarioContext,
+                         final ExecutionContext executionContext) {
         final StepExecutor stepExecutor = new StepExecutor();
         final HooksRunner hooksRunner = new HooksRunner(hooks, stepExecutor);
 
         final Failures beforeScenarioResult = hooksRunner.run(Hooks.Scope.BEFORE_SCENARIO, scenario,
-                context, null, true);
+                scenarioContext, executionContext, true);
 
         if (!beforeScenarioResult.asList().isEmpty()) {
             return beforeScenarioResult;
         }
 
-        final Failures flowResults = runFlow(stepExecutor, scenario.flow().steps(), context);
+        final Failures flowResults = runFlow(stepExecutor, scenario.flow().steps(), scenarioContext, executionContext);
 
-        hooksRunner.run(Hooks.Scope.AFTER_SCENARIO, scenario, context, null, true);
+        hooksRunner.run(Hooks.Scope.AFTER_SCENARIO, scenario, scenarioContext, executionContext, false);
 
         return flowResults;
     }
 
-    private Failures runFlow(final StepExecutor stepExecutor, final List<ExecutableStep> steps, final ScenarioContext context) {
+    private Failures runFlow(final StepExecutor stepExecutor, final List<ExecutableStep> steps,
+                             final ScenarioContext scenarioContext, final ExecutionContext executionContext) {
         return new Failures(steps.stream()
-                .map(step -> stepRunner.runStep(stepExecutor, step, context))
+                .map(step -> stepRunner.runStep(stepExecutor, step, scenarioContext, executionContext))
                 .map(Failures::asList)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList()));

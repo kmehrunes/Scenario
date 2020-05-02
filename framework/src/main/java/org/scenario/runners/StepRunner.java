@@ -18,44 +18,47 @@ class StepRunner {
         this.hooks = hooks;
     }
 
-    Failures runStep(final StepExecutor executor, final ExecutableStep step, final ScenarioContext context) {
+    Failures runStep(final StepExecutor executor, final ExecutableStep step, final ScenarioContext scenarioContext) {
+        return runStep(executor, step, scenarioContext, new ExecutionContext.Builder().build());
+    }
+
+    Failures runStep(final StepExecutor executor, final ExecutableStep step,
+                     final ScenarioContext scenarioContext, final ExecutionContext executionContext) {
         final HooksRunner hooksRunner = new HooksRunner(hooks, executor);
-        final Failures beforeStepResults = hooksRunner.run(Hooks.Scope.BEFORE_STEP, prepareStepContext(step, context),
+        final Failures beforeStepResults = hooksRunner.run(Hooks.Scope.BEFORE_STEP, prepareStepContext(step, scenarioContext, executionContext),
                 null, true);
 
         if (!beforeStepResults.asList().isEmpty()) {
             return beforeStepResults;
         }
 
-        Optional<Failure> failure = invokeStep(executor, step, context);
+        Optional<Failure> failure = invokeStep(executor, step, scenarioContext, executionContext);
 
-        Failures afterStepFailures = hooksRunner.run(Hooks.Scope.AFTER_STEP, prepareStepContext(step, context),
+        Failures afterStepFailures = hooksRunner.run(Hooks.Scope.AFTER_STEP, prepareStepContext(step, scenarioContext, executionContext),
                 failure.map(Collections::singletonList).map(Failures::new).orElse(null), true);
 
         return new Failures(Stream.concat(afterStepFailures.asList().stream(), failure.stream())
                 .collect(Collectors.toList()));
     }
 
-    private ExecutionContext.Builder prepareStepContext(final ExecutableStep step,
-                                                        final ScenarioContext scenarioContext) {
-        return new ExecutionContext.Builder()
+    private ExecutionContext.Builder prepareStepContext(final ExecutableStep step, final ScenarioContext scenarioContext,
+                                                        final ExecutionContext executionContext) {
+        return executionContext.toBuilder()
                 .add(step)
                 .add(step.method())
                 .add(step.method().getAnnotation(Step.class))
                 .add(scenarioContext);
     }
 
-    private ExecutionContext prepareStepContext(final ScenarioContext scenarioContext) {
-        return new ExecutionContext.Builder()
+    private ExecutionContext prepareStepContext(final ScenarioContext scenarioContext, final ExecutionContext executionContext) {
+        return executionContext.toBuilder()
                 .add(scenarioContext)
                 .build();
     }
 
     private Optional<Failure> invokeStep(final StepExecutor executor, final ExecutableStep step,
-                                         final ScenarioContext context) {
-        final ExecutionContext executionContext = prepareStepContext(context);
-
-        return doInvoke(executor, step, executionContext);
+                                         final ScenarioContext scenarioContext, final ExecutionContext executionContext) {
+        return doInvoke(executor, step, prepareStepContext(scenarioContext, executionContext));
     }
 
     private Optional<Failure> doInvoke(final StepExecutor executor, final ExecutableStep step,

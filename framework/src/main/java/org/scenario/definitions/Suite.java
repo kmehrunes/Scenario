@@ -11,10 +11,10 @@ public final class Suite {
     private final String description;
     private final Hooks hooks;
     private final List<Scenario> scenarios;
-    private final ExecutionContext.Builder executionContext;
+    private final ExecutionContext executionContext;
 
     public Suite(final String name, final String description, final Hooks hooks,
-                 final List<Scenario> scenarios, final ExecutionContext.Builder executionContext) {
+                 final List<Scenario> scenarios, final ExecutionContext executionContext) {
         this.name = name;
         this.description = description;
         this.hooks = hooks;
@@ -38,7 +38,7 @@ public final class Suite {
         return name;
     }
 
-    public ExecutionContext.Builder executionContext() {
+    public ExecutionContext executionContext() {
         return executionContext;
     }
 
@@ -103,7 +103,7 @@ public final class Suite {
         }
 
         public Suite build() {
-            return new Suite(name, description, hooksBuilder.build(), scenarios, executionContext);
+            return new Suite(name, description, hooksBuilder.build(), scenarios, executionContext.build());
         }
     }
 }

@@ -27,7 +27,11 @@ public class SuiteRunner {
 
         final List<Failure> failures = new ArrayList<>();
 
-        suite.scenarios().forEach(scenario -> failures.addAll(scenarioRunner.run(scenario, globals).asList()));
+        suite.scenarios()
+                .stream()
+                .map(scenario -> scenarioRunner.run(scenario, globals, suite.executionContext()))
+                .map(Failures::asList)
+                .forEach(failures::addAll);
 
         hooksRunner.run(Hooks.Scope.AFTER_SUITE, suite, new ScenarioContext(globals),
                 new Failures(failures), false);

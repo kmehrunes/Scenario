@@ -18,18 +18,18 @@ final class HooksRunner {
     }
 
     Failures run(final Hooks.Scope scope, final Scenario scenario, final ScenarioContext scenarioContext,
-                 final Failures previousFailures, boolean abortOnFailure) {
-        final ExecutionContext.Builder executionContextBuilder = new ExecutionContext.Builder()
+                 final ExecutionContext executionContext, boolean abortOnFailure) {
+        final ExecutionContext.Builder executionContextBuilder = executionContext.toBuilder()
                 .add(scenario, Scenario.class)
                 .add(scenarioContext);
 
-        return run(scope, executionContextBuilder, previousFailures, abortOnFailure);
+        return run(scope, executionContextBuilder, null, abortOnFailure);
     }
 
     Failures run(final Hooks.Scope scope, final Suite suite, final ScenarioContext scenarioContext,
                  final Failures previousFailures, boolean abortOnFailure) {
 
-        final ExecutionContext.Builder executionContextBuilder = new ExecutionContext.Builder()
+        final ExecutionContext.Builder executionContextBuilder = suite.executionContext().toBuilder()
                 .add(suite, Suite.class)
                 .add(scenarioContext);
 

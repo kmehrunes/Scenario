@@ -6,8 +6,8 @@ import org.scenario.annotations.Step;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ScenarioFlow {
     private final List<ExecutableStep> steps;
@@ -32,19 +32,12 @@ public class ScenarioFlow {
     }
 
     private Method stepMethod(final String name) {
-        final Optional<Method> method = exceptionSafeGetMethod(name, ScenarioContext.class);
+        return Stream.of(instance.getClass().getMethods())
+                .filter(method -> method.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Class " + instance.getClass().getSimpleName() +
+                        " doesn't contain method " + name));
 
-        return method.orElseGet(() -> exceptionSafeGetMethod(name)
-                .orElseThrow(RuntimeException::new));
-
-    }
-
-    private Optional<Method> exceptionSafeGetMethod(final String name, final Class<?>... args) {
-        try {
-            return Optional.of(instance.getClass().getMethod(name, args));
-        } catch (final NoSuchMethodException e) {
-            return Optional.empty();
-        }
     }
 
     public static class Builder {
