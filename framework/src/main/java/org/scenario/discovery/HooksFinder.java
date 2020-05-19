@@ -8,6 +8,7 @@ import org.scenario.definitions.Hooks;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -15,6 +16,8 @@ import java.util.stream.Stream;
 
 public class HooksFinder {
     public List<Hook> findInObject(final Object object) {
+        Objects.requireNonNull(object, "object cannot be null");
+
         return Stream.of(object.getClass().getMethods())
                 .flatMap(method -> findInMethod(method, object))
                 .collect(Collectors.toList());
