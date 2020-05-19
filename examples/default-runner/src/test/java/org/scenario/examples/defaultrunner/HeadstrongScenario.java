@@ -22,22 +22,14 @@ public class HeadstrongScenario {
     }
 
     @Step(description = "Back off, I'll take you on")
-    public void backOff() {
-
-    }
+    public void backOff() { }
 
     @Step(description = "Headstrong to take on anyone")
-    public void headstrong() {
-
-    }
+    public void headstrong() { }
 
     @Step(description = "I know that you're wrong")
-    public void youAreWrong() {
-
-    }
+    public void youAreWrong() { }
 
     @Step(description = "And this is not where you belong")
-    public void whereYouBelong() {
-        throw new RuntimeException();
-    }
+    public void whereYouBelong() { }
 }
