@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SuiteRunner {
 
-    public void run(final Suite suite) {
+    public Failures run(final Suite suite) {
         final StepRunner stepRunner = new StepRunner(suite.hooks());
         final StepExecutor stepExecutor = new StepExecutor();
         final ScenarioRunner scenarioRunner = new ScenarioRunner(suite.hooks(), stepRunner);
@@ -22,7 +24,7 @@ public class SuiteRunner {
                 new ScenarioContext(globals), null, true);
 
         if (!beforeSuiteFailures.asList().isEmpty()) {
-            return;
+            return beforeSuiteFailures;
         }
 
         final List<Failure> failures = new ArrayList<>();
@@ -33,8 +35,11 @@ public class SuiteRunner {
                 .map(Failures::asList)
                 .forEach(failures::addAll);
 
-        hooksRunner.run(Hooks.Scope.AFTER_SUITE, suite, new ScenarioContext(globals),
+        final Failures afterSuiteFailures = hooksRunner.run(Hooks.Scope.AFTER_SUITE, suite, new ScenarioContext(globals),
                 new Failures(failures), false);
+
+        return new Failures(Stream.concat(failures.stream(), afterSuiteFailures.asList().stream())
+                .collect(Collectors.toList()));
     }
 
 }

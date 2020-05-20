@@ -1,14 +1,14 @@
 package org.scenario.discovery;
 
-
 import org.scenario.annotations.SuiteDefinition;
 import org.scenario.definitions.ExecutableStep;
 import org.scenario.definitions.Suite;
+import org.scenario.exceptions.DefinitionException;
+import org.scenario.exceptions.RuntimeReflectionException;
+import org.scenario.util.Packages;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,7 +21,7 @@ public class SuiteDiscovery {
         final List<Suite> suites = new ArrayList<>();
 
         for (final String packageName : packages) {
-            final List<Class<?>> classes = findClasses(packageName);
+            final List<Class<?>> classes = Packages.findClasses(packageName);
             final List<ExecutableStep> suiteDefinitions = findSuiteDefinitions(classes);
 
             suiteDefinitions.stream()
@@ -29,7 +29,7 @@ public class SuiteDiscovery {
                         try {
                             return definition.method().invoke(definition.instance());
                         } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e);
+                            throw new RuntimeReflectionException(e);
                         }
                     })
                     .map(result -> (Suite) result)
@@ -43,24 +43,6 @@ public class SuiteDiscovery {
         return classes.stream()
                 .map(this::findSuiteDefinitionsMethods)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
-
-    private List<Class<?>> findClasses(final String packageName) {
-        final URL root = Thread.currentThread().getContextClassLoader()
-                .getResource(packageName.replace(".", "/"));
-
-        final File[] files = new File(root.getFile()).listFiles((dir, name) -> name.endsWith(".class"));
-
-        return Stream.of(files)
-                .map(file -> file.getName().replace(".class", ""))
-                .map(className -> {
-                    try {
-                        return Class.forName(packageName + "." + className);
-                    } catch (ClassNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
                 .collect(Collectors.toList());
     }
 
@@ -87,7 +69,7 @@ public class SuiteDiscovery {
 
     private void verifyReturnsSuite(final Method method) {
         if (!Suite.class.isAssignableFrom(method.getReturnType())) {
-            throw new RuntimeException("Method " + method.getName() + " doesn't return an instance of Suite");
+            throw new DefinitionException("Method " + method.getName() + " doesn't return an instance of Suite");
         }
     }
 
@@ -95,7 +77,7 @@ public class SuiteDiscovery {
         try {
             return clazz.getConstructor().newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeReflectionException(e);
         }
     }
 }

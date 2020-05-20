@@ -3,6 +3,8 @@ package org.scenario.discovery;
 import org.scenario.annotations.ScenarioDefinition;
 import org.scenario.definitions.ExecutableStep;
 import org.scenario.definitions.Scenario;
+import org.scenario.exceptions.DefinitionException;
+import org.scenario.exceptions.RuntimeReflectionException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,7 +22,7 @@ public class ScenarioDiscovery {
                     try {
                         return definition.method().invoke(definition.instance());
                     } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeReflectionException(e);
                     }
                 })
                 .map(result -> (Scenario) result)
@@ -48,7 +50,7 @@ public class ScenarioDiscovery {
 
     private void returnsScenario(final Method method) {
         if (!Scenario.class.isAssignableFrom(method.getReturnType())) {
-            throw new RuntimeException("Method " + method.getName() + " doesn't return an instance of Suite");
+            throw new DefinitionException("Method " + method.getName() + " doesn't return an instance of Scenario");
         }
     }
 

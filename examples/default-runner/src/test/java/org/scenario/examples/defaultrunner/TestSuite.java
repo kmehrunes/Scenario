@@ -2,11 +2,7 @@ package org.scenario.examples.defaultrunner;
 
 import org.scenario.annotations.SuiteDefinition;
 import org.scenario.definitions.Suite;
-import org.scenario.discovery.SuiteDiscovery;
 import org.scenario.runners.DefaultOutputHooks;
-import org.scenario.runners.SuiteRunner;
-
-import java.util.List;
 
 public class TestSuite {
     @SuiteDefinition
