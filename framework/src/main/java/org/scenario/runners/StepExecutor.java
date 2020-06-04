@@ -5,10 +5,11 @@ import org.scenario.definitions.ExecutableStep;
 import org.scenario.definitions.ExecutionContext;
 import org.scenario.definitions.Failure;
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 class StepExecutor {
     Optional<Failure> execute(final ExecutableStep executableStep, final ExecutionContext executionContext) {
@@ -45,13 +46,31 @@ class StepExecutor {
                     " has to be between 0 and" + method.getParameterCount());
         }
 
+        final Parameter param = method.getParameters()[paramIndex];
         final Class<?> paramType = method.getParameterTypes()[paramIndex];
 
-        final Name name = Stream.of(method.getParameterAnnotations()[paramIndex])
-                .filter(annotation -> annotation.annotationType().equals(Name.class))
-                .map(annotation -> (Name) annotation)
-                .findFirst()
-                .orElse(null);
+        if (ResourceParams.isResource(param)) {
+            return getFromResources(param, paramType);
+        } else {
+            return getFromContext(method, param, paramType, executionContext);
+        }
+    }
+
+    private Object getFromResources(final Parameter param, final Class<?> paramType) {
+        if (paramType == String.class) {
+            return ResourceParams.readResource(param).asString();
+        } else if (paramType == byte[].class) {
+            return ResourceParams.readResource(param).asBytes();
+        } else if (paramType == InputStream.class) {
+            return ResourceParams.readResource(param).asInputStream();
+        } else {
+            throw new IllegalArgumentException("Resource parameter must be of type String, InputStream, or byte[]");
+        }
+    }
+
+    private Object getFromContext(final Method method, final Parameter param, final Class<?> paramType,
+                                  final ExecutionContext executionContext) {
+        final Name name = param.getAnnotation(Name.class);
 
         if (name == null) {
             return executionContext.getByClass(paramType)
