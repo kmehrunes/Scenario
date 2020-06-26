@@ -6,7 +6,6 @@ import org.scenario.util.Output;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 final class HooksRunner {
     private final Hooks hooks;
@@ -17,8 +16,8 @@ final class HooksRunner {
         this.executor = executor;
     }
 
-    Failures run(final Hooks.Scope scope, final Scenario scenario, final ScenarioContext scenarioContext,
-                 final ExecutionContext executionContext, boolean abortOnFailure) {
+    Report run(final Hooks.Scope scope, final Scenario scenario, final ScenarioContext scenarioContext,
+               final ExecutionContext executionContext, boolean abortOnFailure) {
         final ExecutionContext.Builder executionContextBuilder = executionContext.toBuilder()
                 .add(scenario, Scenario.class)
                 .add(scenarioContext);
@@ -26,41 +25,41 @@ final class HooksRunner {
         return run(scope, executionContextBuilder, null, abortOnFailure);
     }
 
-    Failures run(final Hooks.Scope scope, final Suite suite, final ScenarioContext scenarioContext,
-                 final Failures previousFailures, boolean abortOnFailure) {
+    Report run(final Hooks.Scope scope, final Suite suite, final ScenarioContext scenarioContext,
+               final Report previousReport, boolean abortOnFailure) {
 
         final ExecutionContext.Builder executionContextBuilder = suite.executionContext().toBuilder()
                 .add(suite, Suite.class)
                 .add(scenarioContext);
 
-        return run(scope, executionContextBuilder, previousFailures, abortOnFailure);
+        return run(scope, executionContextBuilder, previousReport, abortOnFailure);
     }
 
-    Failures run(final Hooks.Scope scope, final ExecutionContext.Builder contextBuilder,
-                 final Failures previousFailures, boolean abortOnFailure) {
-        final List<Failure> hooksFailures = new ArrayList<>();
+    Report run(final Hooks.Scope scope, final ExecutionContext.Builder contextBuilder,
+               final Report previousReport, boolean abortOnFailure) {
+        final List<StepReport> hooksStepReports = new ArrayList<>();
 
         for (final ExecutableStep step : hooks.executableSteps(scope)) {
             final ExecutionContext executionContext = contextBuilder
-                    .add(previousFailures, Failures.class)
+                    .add(previousReport, Report.class)
                     .build();
 
-            final Optional<Failure> failure = executor.execute(step, executionContext);
+            final StepReport stepReport = executor.execute(step, executionContext);
 
-            if (failure.isPresent()) {
+            if (stepReport.failed()) {
                 Output.error.println((step.description().isEmpty() ? step.name() : step.description())
-                        + " Failed with exception " + failure.get().getCause());
+                        + " Failed with exception " + stepReport.getFailureCause());
 
-                failure.get().getCause().printStackTrace();
+                stepReport.getFailureCause().printStackTrace();
 
                 if (abortOnFailure) {
-                    return new Failures(Collections.singletonList(failure.get()));
+                    return new Report(Collections.singletonList(stepReport));
                 } else {
-                    hooksFailures.add(failure.get());
+                    hooksStepReports.add(stepReport);
                 }
             }
         }
 
-        return new Failures(hooksFailures);
+        return new Report(hooksStepReports);
     }
 }

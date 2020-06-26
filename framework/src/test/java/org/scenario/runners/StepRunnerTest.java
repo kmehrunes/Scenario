@@ -37,7 +37,7 @@ public class StepRunnerTest {
         throw new IllegalArgumentException();
     }
 
-    private List<Failure> runStep(final Method method) {
+    private List<StepReport> runStep(final Method method) {
         final StepRunner runner = new StepRunner(Hooks.empty());
         final StepExecutor executor = new StepExecutor();
 
@@ -48,48 +48,50 @@ public class StepRunnerTest {
 
     @Test
     void runNoTimeoutSuccessStep() throws NoSuchMethodException {
-        final List<Failure> failures = runStep(this.getClass().getMethod("noTimeoutSuccessStep"));
+        final List<StepReport> stepReports = runStep(this.getClass().getMethod("noTimeoutSuccessStep"));
 
-        assertThat(failures).isEmpty();
+        assertThat(stepReports).hasSize(1);
+        assertThat(stepReports.get(0).succeeded()).isTrue();
     }
 
     @Test
     void runNoTimeoutIllegalArgumentExceptionStep() throws NoSuchMethodException {
-        final List<Failure> failures = runStep(this.getClass().getMethod("noTimeoutIllegalArgumentException"));
+        final List<StepReport> stepReports = runStep(this.getClass().getMethod("noTimeoutIllegalArgumentException"));
 
-        assertThat(failures).hasSize(1);
+        assertThat(stepReports).hasSize(1);
 
-        final Failure failure = failures.get(0);
+        final StepReport stepReport = stepReports.get(0);
 
-        assertThat(failure.getCause()).isInstanceOf(IllegalArgumentException.class);
+        assertThat(stepReport.getFailureCause()).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void runTimeoutSuccessStep() throws NoSuchMethodException {
-        final List<Failure> failures = runStep(this.getClass().getMethod("timeoutSuccessStep"));
+        final List<StepReport> stepReports = runStep(this.getClass().getMethod("timeoutSuccessStep"));
 
-        assertThat(failures).isEmpty();
+        assertThat(stepReports).hasSize(1);
+        assertThat(stepReports.get(0).succeeded()).isTrue();
     }
 
     @Test
     void runTimeoutFailureStepStep() throws NoSuchMethodException {
-        final List<Failure> failures = runStep(this.getClass().getMethod("timeoutFailureStep"));
+        final List<StepReport> stepReports = runStep(this.getClass().getMethod("timeoutFailureStep"));
 
-        assertThat(failures).hasSize(1);
+        assertThat(stepReports).hasSize(1);
 
-        final Failure failure = failures.get(0);
+        final StepReport stepReport = stepReports.get(0);
 
-        assertThat(failure.getCause()).isInstanceOf(TimeoutException.class);
+        assertThat(stepReport.getFailureCause()).isInstanceOf(TimeoutException.class);
     }
 
     @Test
     void runTimeoutIllegalArgumentExceptionStep() throws NoSuchMethodException {
-        final List<Failure> failures = runStep(this.getClass().getMethod("timeoutIllegalArgumentException"));
+        final List<StepReport> stepReports = runStep(this.getClass().getMethod("timeoutIllegalArgumentException"));
 
-        assertThat(failures).hasSize(1);
+        assertThat(stepReports).hasSize(1);
 
-        final Failure failure = failures.get(0);
+        final StepReport stepReport = stepReports.get(0);
 
-        assertThat(failure.getCause()).isInstanceOf(IllegalArgumentException.class);
+        assertThat(stepReport.getFailureCause()).isInstanceOf(IllegalArgumentException.class);
     }
 }

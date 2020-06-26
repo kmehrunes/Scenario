@@ -3,7 +3,7 @@ package org.scenario.runners;
 import org.scenario.annotations.Name;
 import org.scenario.definitions.ExecutableStep;
 import org.scenario.definitions.ExecutionContext;
-import org.scenario.definitions.Failure;
+import org.scenario.definitions.StepReport;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -12,15 +12,15 @@ import java.lang.reflect.Parameter;
 import java.util.Optional;
 
 class StepExecutor {
-    Optional<Failure> execute(final ExecutableStep executableStep, final ExecutionContext executionContext) {
+    StepReport execute(final ExecutableStep executableStep, final ExecutionContext executionContext) {
         try {
             final Object[] args = prepareArgs(executableStep, executionContext);
             executableStep.execute(args);
-            return Optional.empty();
+            return StepReport.success(executableStep);
         } catch (final InvocationTargetException e) {
-            return Optional.of(new Failure(executableStep, e.getCause()));
+            return StepReport.failure(executableStep, e.getCause());
         } catch (final Throwable e) {
-            return Optional.of(new Failure(executableStep, e));
+            return StepReport.failure(executableStep, e);
         }
     }
 

@@ -7,7 +7,7 @@ import org.scenario.annotations.Resource;
 import org.scenario.annotations.Step;
 import org.scenario.definitions.ExecutableStep;
 import org.scenario.definitions.ExecutionContext;
-import org.scenario.definitions.Failure;
+import org.scenario.definitions.StepReport;
 import org.scenario.definitions.ScenarioContext;
 
 import java.lang.reflect.Method;
@@ -21,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class StepExecutorTest {
 
     @BeforeStep
-    public void beforeStep(final Step step, final ScenarioContext scenarioContext, final Method method, final Failure failure) {
+    public void beforeStep(final Step step, final ScenarioContext scenarioContext, final Method method, final StepReport stepReport) {
         Objects.requireNonNull(step);
         Objects.requireNonNull(scenarioContext);
         Objects.requireNonNull(method);
 
-        assertNull(failure);
+        assertNull(stepReport);
     }
 
     @Step
@@ -44,7 +44,7 @@ class StepExecutorTest {
     void prepareArgs() throws NoSuchMethodException {
         final Method stepMethod = this.getClass().getMethod("step");
         final Method beforeStepMethod = this.getClass().getMethod("beforeStep", Step.class, ScenarioContext.class,
-                Method.class, Failure.class);
+                Method.class, StepReport.class);
         final Step stepAnnotation = stepMethod.getAnnotation(Step.class);
         final ScenarioContext scenarioContext = new ScenarioContext(new HashMap<>());
 
@@ -52,7 +52,7 @@ class StepExecutorTest {
                 .add(stepMethod)
                 .add(scenarioContext)
                 .add(stepAnnotation)
-                .add(null, Failure.class)
+                .add(null, StepReport.class)
                 .build();
 
         final ExecutableStep executableStep = new ExecutableStep(beforeStepMethod.getName(),

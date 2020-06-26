@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class SuiteRunner {
 
-    public Failures run(final Suite suite) {
+    public Report run(final Suite suite) {
         final StepRunner stepRunner = new StepRunner(suite.hooks());
         final StepExecutor stepExecutor = new StepExecutor();
         final ScenarioRunner scenarioRunner = new ScenarioRunner(suite.hooks(), stepRunner);
@@ -20,25 +20,25 @@ public class SuiteRunner {
 
         final Map<String, Object> globals = new HashMap<>();
 
-        final Failures beforeSuiteFailures = hooksRunner.run(Hooks.Scope.BEFORE_SUITE, suite,
+        final Report beforeSuiteReport = hooksRunner.run(Hooks.Scope.BEFORE_SUITE, suite,
                 new ScenarioContext(globals), null, true);
 
-        if (!beforeSuiteFailures.asList().isEmpty()) {
-            return beforeSuiteFailures;
+        if (beforeSuiteReport.containsFailures()) {
+            return beforeSuiteReport;
         }
 
-        final List<Failure> failures = new ArrayList<>();
+        final List<StepReport> stepReports = new ArrayList<>();
 
         suite.scenarios()
                 .stream()
                 .map(scenario -> scenarioRunner.run(scenario, globals, suite.executionContext()))
-                .map(Failures::asList)
-                .forEach(failures::addAll);
+                .map(Report::asList)
+                .forEach(stepReports::addAll);
 
-        final Failures afterSuiteFailures = hooksRunner.run(Hooks.Scope.AFTER_SUITE, suite, new ScenarioContext(globals),
-                new Failures(failures), false);
+        final Report afterSuiteReport = hooksRunner.run(Hooks.Scope.AFTER_SUITE, suite, new ScenarioContext(globals),
+                new Report(stepReports), false);
 
-        return new Failures(Stream.concat(failures.stream(), afterSuiteFailures.asList().stream())
+        return new Report(Stream.concat(stepReports.stream(), afterSuiteReport.asList().stream())
                 .collect(Collectors.toList()));
     }
 

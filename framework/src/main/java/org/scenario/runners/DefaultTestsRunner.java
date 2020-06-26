@@ -1,6 +1,7 @@
 package org.scenario.runners;
 
-import org.scenario.definitions.Failure;
+import org.scenario.definitions.Report;
+import org.scenario.definitions.StepReport;
 import org.scenario.definitions.Suite;
 import org.scenario.discovery.SuiteDiscovery;
 import org.scenario.exceptions.TestFailuresExceptions;
@@ -20,12 +21,14 @@ public class DefaultTestsRunner {
 
         final SuiteRunner runner = new SuiteRunner();
 
-        final List<Failure> failures = suites.stream()
+        final List<StepReport> stepReports = suites.stream()
                 .map(runner::run)
                 .flatMap(suiteFailures -> suiteFailures.asList().stream())
                 .collect(Collectors.toList());
 
-        if (!failures.isEmpty()) {
+        final Report report = new Report(stepReports);
+
+        if (report.containsFailures()) {
             throw new TestFailuresExceptions("There are test failures");
         }
     }
