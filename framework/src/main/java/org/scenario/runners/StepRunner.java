@@ -24,7 +24,7 @@ class StepRunner {
     Report runStep(final StepExecutor executor, final ExecutableStep step,
                    final ScenarioContext scenarioContext, final ExecutionContext executionContext) {
         final HooksRunner hooksRunner = new HooksRunner(hooks, executor);
-        final Report beforeStepResults = hooksRunner.run(Hooks.Scope.BEFORE_STEP, prepareStepContext(step, scenarioContext, executionContext),
+        final Report beforeStepResults = hooksRunner.run(MethodScope.BEFORE_STEP, prepareStepContext(step, scenarioContext, executionContext),
                 null, true);
 
         if (beforeStepResults.containsFailures()) {
@@ -34,7 +34,7 @@ class StepRunner {
         final StepReport stepReport = invokeStep(executor, step, scenarioContext, executionContext);
         final Report report = new Report(Collections.singletonList(stepReport));
 
-        final Report afterStepReport = hooksRunner.run(Hooks.Scope.AFTER_STEP, prepareStepContext(step, scenarioContext, executionContext),
+        final Report afterStepReport = hooksRunner.run(MethodScope.AFTER_STEP, prepareStepContext(step, scenarioContext, executionContext),
                 report, true);
 
         return new Report(Stream.concat(afterStepReport.asList().stream(), Stream.of(stepReport))

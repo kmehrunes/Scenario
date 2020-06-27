@@ -15,9 +15,9 @@ import java.util.stream.Stream;
 
 public class ScenarioDiscovery {
     public List<Scenario> discover(final Object object) {
-        final List<ExecutableStep> suiteDefinitions = findScenarioDefinitionsMethods(object);
+        final List<ExecutableStep> scenarioDefinitions = findScenarioDefinitionsMethods(object);
 
-        return suiteDefinitions.stream()
+        return scenarioDefinitions.stream()
                 .map(definition -> {
                     try {
                         return definition.method().invoke(definition.instance());

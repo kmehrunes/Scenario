@@ -16,7 +16,7 @@ final class HooksRunner {
         this.executor = executor;
     }
 
-    Report run(final Hooks.Scope scope, final Scenario scenario, final ScenarioContext scenarioContext,
+    Report run(final MethodScope scope, final Scenario scenario, final ScenarioContext scenarioContext,
                final ExecutionContext executionContext, boolean abortOnFailure) {
         final ExecutionContext.Builder executionContextBuilder = executionContext.toBuilder()
                 .add(scenario, Scenario.class)
@@ -25,7 +25,7 @@ final class HooksRunner {
         return run(scope, executionContextBuilder, null, abortOnFailure);
     }
 
-    Report run(final Hooks.Scope scope, final Suite suite, final ScenarioContext scenarioContext,
+    Report run(final MethodScope scope, final Suite suite, final ScenarioContext scenarioContext,
                final Report previousReport, boolean abortOnFailure) {
 
         final ExecutionContext.Builder executionContextBuilder = suite.executionContext().toBuilder()
@@ -35,7 +35,7 @@ final class HooksRunner {
         return run(scope, executionContextBuilder, previousReport, abortOnFailure);
     }
 
-    Report run(final Hooks.Scope scope, final ExecutionContext.Builder contextBuilder,
+    Report run(final MethodScope scope, final ExecutionContext.Builder contextBuilder,
                final Report previousReport, boolean abortOnFailure) {
         final List<StepReport> hooksStepReports = new ArrayList<>();
 

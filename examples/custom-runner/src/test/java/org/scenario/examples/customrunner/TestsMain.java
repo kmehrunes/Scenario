@@ -1,5 +1,6 @@
 package org.scenario.examples.customrunner;
 
+import org.scenario.definitions.Report;
 import org.scenario.definitions.StepReport;
 import org.scenario.definitions.Suite;
 import org.scenario.runners.SuiteRunner;
@@ -18,7 +19,9 @@ public class TestsMain {
                 .flatMap(suiteFailures -> suiteFailures.asList().stream())
                 .collect(Collectors.toList());
 
-        if (!stepReports.isEmpty()) {
+        final Report allReport = new Report(stepReports);
+
+        if (!allReport.containsFailures()) {
             Output.warn.println("Some tests have failed but we aren't going to fail the build for it");
         }
     }

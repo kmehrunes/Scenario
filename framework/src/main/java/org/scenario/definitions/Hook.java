@@ -3,10 +3,10 @@ package org.scenario.definitions;
 import java.util.Objects;
 
 public class Hook {
-    private final Hooks.Scope scope;
+    private final MethodScope scope;
     private final ExecutableStep executableStep;
 
-    public Hook(final Hooks.Scope scope, final ExecutableStep executableStep) {
+    public Hook(final MethodScope scope, final ExecutableStep executableStep) {
         Objects.requireNonNull(scope, "Hook scope cannot be null");
         Objects.requireNonNull(executableStep, "Hook executable step cannot be null");
 
@@ -14,7 +14,7 @@ public class Hook {
         this.executableStep = executableStep;
     }
 
-    public Hooks.Scope scope() {
+    public MethodScope scope() {
         return scope;
     }
 

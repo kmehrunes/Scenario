@@ -20,7 +20,7 @@ public class SuiteRunner {
 
         final Map<String, Object> globals = new HashMap<>();
 
-        final Report beforeSuiteReport = hooksRunner.run(Hooks.Scope.BEFORE_SUITE, suite,
+        final Report beforeSuiteReport = hooksRunner.run(MethodScope.BEFORE_SUITE, suite,
                 new ScenarioContext(globals), null, true);
 
         if (beforeSuiteReport.containsFailures()) {
@@ -35,7 +35,7 @@ public class SuiteRunner {
                 .map(Report::asList)
                 .forEach(stepReports::addAll);
 
-        final Report afterSuiteReport = hooksRunner.run(Hooks.Scope.AFTER_SUITE, suite, new ScenarioContext(globals),
+        final Report afterSuiteReport = hooksRunner.run(MethodScope.AFTER_SUITE, suite, new ScenarioContext(globals),
                 new Report(stepReports), false);
 
         return new Report(Stream.concat(stepReports.stream(), afterSuiteReport.asList().stream())

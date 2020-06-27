@@ -32,7 +32,7 @@ public class ScenarioFlow {
         final Method method = stepMethod(name);
         final Step annotation = method.getAnnotation(Step.class);
 
-        return new ExecutableStep(name, annotation.description(), method, instance);
+        return new ExecutableStep(name, annotation.description(), method, instance, MethodScope.FLOW);
     }
 
     private Method stepMethod(final String name) {

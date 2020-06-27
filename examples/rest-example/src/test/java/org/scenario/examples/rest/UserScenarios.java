@@ -2,6 +2,7 @@ package org.scenario.examples.rest;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
+import org.scenario.annotations.CircuitBreaker;
 import org.scenario.annotations.Resource;
 import org.scenario.annotations.ScenarioDefinition;
 import org.scenario.annotations.Step;
@@ -42,6 +43,7 @@ public class UserScenarios {
     }
 
     @Step(description = "Create a user")
+    @CircuitBreaker // if we couldn't create a user then no need to continue
     public void createUser(final ScenarioContext context, final @Resource("create-user-request.json") String body) {
         final String baseUrl = Optional.ofNullable(context.global().get("baseUrl"))
                 .map(Object::toString)
