@@ -1,11 +1,24 @@
 # Scenario
 A flexible testing framework (and library) designed for integration and end-to-end tests.
 
+## Roadmap
+Here are the planned features:
+- [x] Loading resources (0.0.2)
+- [x] Timeouts and circuit breakers (0.0.2)
+- [ ] Template engine for resources
+- [ ] Report generation
+- [ ] Loading scenarios from YAML files
+- [ ] Maven plugin
+- [ ] Gradle plugin
+
 ## Getting the Framework
-The framework will be added to Maven central repository soon. In the meantime you can build it locally by running `mvn clean install`.
+The framework will be added to Maven central repository soon. In the meantime you
+can build it locally by running `mvn clean install`.
 
 ## Overview
-The framework has a very basic design centered around suites. A suite has a collection of scenarios, and each scenario has a set of steps. And steps can be shared across scenarios. For example:
+The framework has a very basic design centered around suites. A suite has a
+collection of scenarios, and each scenario has a set of steps. And steps can be
+shared across scenarios. For example:
 ```
 tests
   - suite A
@@ -95,6 +108,22 @@ public void urlIsInjected(@Name("name") String url) { // you can drop the annota
 }
 ```
 
+### Resource Parameters
+A special case of parameters are ones which need the content of a resource. Such
+parameters can be annotated with `@Resource("path-of-resource-file")`.
+
+## Circuit Breakers
+Often times you might want to stop a scenario if a step failed because the other
+steps depend on it. You can annotate such steps with `@CircuitBreaker`. For example
+```java
+@Step(description = "Create a user")
+@CircuitBreaker // if we couldn't create a user then no need to continue
+public void createUser(final ScenarioContext context) {
+    ...
+}
+```
+**This only applies to scenario flow steps and has no effect on hooks**
+
 ## Hooks
 The framework supports adding hooks at various levels. In fact, the whole execution flow goes like this:
 ```
@@ -158,9 +187,3 @@ Maven and Gradle plugins will be provided in the future. For now you can still u
     </plugins>
 </build>
 ```
-
-## The Future
-Here are the planned features:
-* Injecting resources
-* Adding a template engine for resources
-* Report generation
