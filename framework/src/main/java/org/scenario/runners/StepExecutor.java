@@ -4,6 +4,7 @@ import org.scenario.annotations.Name;
 import org.scenario.definitions.ExecutableStep;
 import org.scenario.definitions.ExecutionContext;
 import org.scenario.definitions.StepReport;
+import org.scenario.util.ResourceParams;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +12,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
+/**
+ * Low-level executor which: prepares the arguments for
+ * a step, invokes the step method, and returns the execution
+ * report.
+ */
 class StepExecutor {
     StepReport execute(final ExecutableStep executableStep, final ExecutionContext executionContext) {
         try {

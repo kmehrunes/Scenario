@@ -4,6 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * A mutable context of values which can be passed
+ * around across steps. It has both a local context
+ * visible only within a scenario, and a global
+ * context for the whole suite.
+ */
 public class ScenarioContext {
     private final Map<String, Object> local;
     private final Map<String, Object> global;

@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Runs a suite, including its hooks and scenarios.
+ */
 public class SuiteRunner {
 
     public Report run(final Suite suite) {

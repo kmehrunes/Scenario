@@ -8,6 +8,30 @@
     <artifactId>scenario</artifactId>
     <version>0.0.1</version>
 
+    <name>Scenario :: Parent</name>
+    <url>https://github.com/kmehrunes/Scenario</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Khaled Y.M.</name>
+            <email>kyasser@pm.me</email>
+            <url>https://khaledym.me</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/kmehrunes/Scenario</url>
+        <connection>scm:git:git://github.com/kmehrunes/Scenario.git</connection>
+        <developerConnection>scm:git:git@github.com:kmehrunes/Scenario.git</developerConnection>
+    </scm>
+
     <packaging>pom</packaging>
 
     <modules>
@@ -74,6 +98,32 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${surefire.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>

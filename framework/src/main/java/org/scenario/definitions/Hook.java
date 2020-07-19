@@ -2,6 +2,11 @@ package org.scenario.definitions;
 
 import java.util.Objects;
 
+/**
+ * A user-defined hook definition which is meant to
+ * be executed within a certain scope. For available
+ * scopes check {@link MethodScope}.
+ */
 public class Hook {
     private final MethodScope scope;
     private final ExecutableStep executableStep;

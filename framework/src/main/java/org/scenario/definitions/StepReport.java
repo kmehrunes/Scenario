@@ -2,6 +2,9 @@ package org.scenario.definitions;
 
 import java.time.Duration;
 
+/**
+ * The execution report of a single {@link ExecutableStep}
+ */
 public class StepReport {
     private final ExecutableStep step;
     private final Throwable failureCause;

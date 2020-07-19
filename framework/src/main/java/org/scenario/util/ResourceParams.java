@@ -1,4 +1,4 @@
-package org.scenario.runners;
+package org.scenario.util;
 
 import org.scenario.annotations.Resource;
 import org.scenario.definitions.ResourceFile;
@@ -8,6 +8,9 @@ import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.util.Optional;
 
+/**
+ * Utility class to deal with resources.
+ */
 public class ResourceParams {
     public static boolean isResource(final Parameter parameter) {
         return parameter.getAnnotation(Resource.class) != null;

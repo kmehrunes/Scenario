@@ -6,6 +6,10 @@ import org.scenario.util.Output;
 
 import java.util.List;
 
+/**
+ * Hooks which log suites, scenarios, and steps. It may be
+ * omitted if a different implementation is desired.
+ */
 public class DefaultOutputHooks {
 
     @BeforeSuite

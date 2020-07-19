@@ -10,6 +10,10 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Runs a single scenario step including its hooks. It
+ * delegates the actual execution of the step to {@link StepExecutor}.
+ */
 class StepRunner {
     private final Hooks hooks;
 

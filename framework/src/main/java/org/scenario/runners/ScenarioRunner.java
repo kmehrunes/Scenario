@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Runs a scenario including its hooks.
+ */
 class ScenarioRunner {
     private final StepRunner stepRunner;
     private final Hooks hooks;

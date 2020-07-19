@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A container for all hooks of a suite. An instance
+ * of this class is created only once when the suite
+ * is created and cannot be updated afterwards.
+ */
 public final class Hooks {
 
     private final List<ExecutableStep> beforeSuite;

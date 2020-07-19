@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 
+/**
+ * Convenience wrapper for reading a resource file.
+ */
 public class ResourceFile {
     private final File resource;
 

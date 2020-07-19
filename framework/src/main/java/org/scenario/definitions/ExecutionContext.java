@@ -5,6 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The context which will be passed to all steps regardless
+ * of a scope. It contains context information added by the
+ * suite definition. It's not meant to only be queried and
+ * never updated. For mutable context parameters within
+ * scopes of a scenario use {@link ScenarioContext}.
+ */
 public class ExecutionContext {
     private final Map<Class<?>, Object> contextObjects;
     private final Map<String, Object> namedContextObjects;

@@ -9,6 +9,14 @@ import org.scenario.exceptions.TestFailuresExceptions;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A runner to be used if no custom runner is given. It
+ * requires a list of packages to be passed to it. Suites
+ * defined within the packages will be discovered by
+ * {@link SuiteDiscovery} and run. It will throw a
+ * {@link TestFailuresExceptions} if any suite finished
+ * with any failure.
+ */
 public class DefaultTestsRunner {
     public static void main(String[] args) {
         if (args.length < 1) {

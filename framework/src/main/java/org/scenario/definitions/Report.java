@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A class to wrap a list of stepReports. It was introduced to
- * handle passing correct parameter to the hooks even after
- * type erasure.
+ * The full execution report of a set of steps.
  */
 public class Report {
     private final List<StepReport> stepReports;

@@ -6,6 +6,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+/**
+ * A wrapper for a method to be executed within a scope. It
+ * includes the object for which the method will be invoked as
+ * well as some other meta data provided by the annotations.
+ */
 public class ExecutableStep {
     private final String name;
     private final String description;

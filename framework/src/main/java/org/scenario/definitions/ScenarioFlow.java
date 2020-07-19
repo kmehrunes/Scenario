@@ -10,6 +10,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * An ordered sequence of the steps of a scenario.
+ */
 public class ScenarioFlow {
     private final List<ExecutableStep> steps;
     private final Object instance;
