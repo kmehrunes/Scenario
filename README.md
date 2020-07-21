@@ -12,8 +12,45 @@ Here are the planned features:
 - [ ] Gradle plugin
 
 ## Getting the Framework
-The framework will be added to Maven central repository soon. In the meantime you
-can build it locally by running `mvn clean install`.
+The framework will be added to Maven central repository soon. In the meantime you can build it locally by running
+`mvn clean install` or use JitPack for that.
+
+### Maven
+```xml
+<repositories>
+  <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.kmehrunes</groupId>
+    <artifactId>Scenario</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
+
+### Gradle
+```groovy
+allprojects {
+  repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+  }
+}
+
+dependencies {
+        implementation 'com.github.kmehrunes:Scenario:0.0.1'
+}
+```
+
+### SBT
+```scala
+resolvers += "jitpack" at "https://jitpack.io"
+
+libraryDependencies += "com.github.kmehrunes" % "Scenario" % "0.0.1"	
+```
 
 ## Overview
 The framework has a very basic design centered around suites. A suite has a

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.scenario</groupId>
-    <artifactId>scenario</artifactId>
+    <artifactId>scenario-parent-pom</artifactId>
     <version>0.0.1</version>
 
     <name>Scenario :: Parent</name>
@@ -35,7 +35,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>framework</module>
+        <module>scenario</module>
         <module>examples</module>
         <module>plugin</module>
     </modules>
