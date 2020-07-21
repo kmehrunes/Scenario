@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.time.Duration;
 import java.util.Optional;
 
 /**
@@ -21,8 +22,12 @@ class StepExecutor {
     StepReport execute(final ExecutableStep executableStep, final ExecutionContext executionContext) {
         try {
             final Object[] args = prepareArgs(executableStep, executionContext);
+
+            final long start = System.currentTimeMillis();
             executableStep.execute(args);
-            return StepReport.success(executableStep);
+            final long end = System.currentTimeMillis();
+
+            return StepReport.success(executableStep, Duration.ofMillis(end - start));
         } catch (final InvocationTargetException e) {
             return StepReport.failure(executableStep, e.getCause());
         } catch (final Throwable e) {
