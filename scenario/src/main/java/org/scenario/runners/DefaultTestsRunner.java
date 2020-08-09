@@ -4,20 +4,23 @@ import org.reflections.Configuration;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.util.ConfigurationBuilder;
+import org.scenario.definitions.Container;
 import org.scenario.definitions.Report;
 import org.scenario.definitions.StepReport;
 import org.scenario.definitions.Suite;
+import org.scenario.discovery.StepsContainersDiscovery;
 import org.scenario.discovery.SuiteDiscovery;
 import org.scenario.exceptions.TestFailuresExceptions;
 import org.scenario.readers.DSLConverter;
 import org.scenario.readers.DSLReader;
 import org.scenario.readers.YAMLReader;
+import org.scenario.util.Packages;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -59,7 +62,7 @@ public class DefaultTestsRunner {
         final SuiteDiscovery suiteDiscovery = new SuiteDiscovery();
         final List<File> dslSuitesFiles = loadSuiteYamlFiles(packages);
 
-        final List<Suite> dslSuites = readDslSuites(Arrays.asList(packages), dslSuitesFiles);
+        final List<Suite> dslSuites = readDslSuites(dslSuitesFiles, packages);
         final List<Suite> suites = suiteDiscovery.discover(packages);
 
         return Stream.concat(dslSuites.stream(), suites.stream())
@@ -84,9 +87,17 @@ public class DefaultTestsRunner {
                 .collect(Collectors.toList());
     }
 
-    private static List<Suite> readDslSuites(final List<String> packageNames, final List<File> suitesFiles) {
+    private static List<Suite> readDslSuites(final List<File> suitesFiles, final String... packages) {
+        final List<Container> containers = new StepsContainersDiscovery()
+                .discover(packages);
+
+        final List<Class<?>> classes = Stream.of(packages)
+                .map(Packages::findClasses)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
         final DSLReader reader = new YAMLReader();
-        final DSLConverter converter = new DSLConverter(packageNames);
+        final DSLConverter converter = new DSLConverter(classes, containers);
 
         return suitesFiles.stream()
                 .map(file -> {

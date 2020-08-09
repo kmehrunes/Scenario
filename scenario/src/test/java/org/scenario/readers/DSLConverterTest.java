@@ -1,11 +1,15 @@
 package org.scenario.readers;
 
 import org.junit.jupiter.api.Test;
+import org.scenario.definitions.Container;
 import org.scenario.definitions.Suite;
+import org.scenario.discovery.StepsContainersDiscovery;
 import org.scenario.readers.model.DSLScenario;
 import org.scenario.readers.model.DSLSuite;
+import org.scenario.util.Packages;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +30,10 @@ public class DSLConverterTest {
                 .setHooks(Collections.singletonList(testClass.getClass().getSimpleName()))
                 .setScenarios("Test scenario", dslScenario);
 
-        final DSLConverter converter = new DSLConverter(Collections.singletonList(this.getClass().getPackageName()));
+        final List<Container> containers = new StepsContainersDiscovery().discover(this.getClass().getPackageName());
+        final List<Class<?>> classes = Packages.findClasses(this.getClass().getPackageName());
+
+        final DSLConverter converter = new DSLConverter(classes, containers);
 
         final Suite expected = new Suite.Builder()
                 .name("Test suite")
@@ -52,7 +59,10 @@ public class DSLConverterTest {
                 .setHooks(Collections.singletonList(testClass.getClass().getSimpleName()))
                 .setScenarios("Test scenario", dslScenario);
 
-        final DSLConverter converter = new DSLConverter(Collections.singletonList(this.getClass().getPackageName()));
+        final List<Container> containers = new StepsContainersDiscovery().discover(this.getClass().getPackageName());
+        final List<Class<?>> classes = Packages.findClasses(this.getClass().getPackageName());
+
+        final DSLConverter converter = new DSLConverter(classes, containers);
 
         final Suite expected = new Suite.Builder()
                 .name("Test suite")

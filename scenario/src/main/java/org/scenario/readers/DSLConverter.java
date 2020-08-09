@@ -1,13 +1,10 @@
 package org.scenario.readers;
 
 import org.scenario.definitions.*;
-import org.scenario.discovery.StepsContainersDiscovery;
 import org.scenario.readers.model.DSLScenario;
 import org.scenario.readers.model.DSLSuite;
 import org.scenario.util.Classes;
-import org.scenario.util.Packages;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,13 +19,11 @@ public class DSLConverter {
     private final Map<String, Container> containers;
     private final Map<String, Class> classes;
 
-    public DSLConverter(final List<String> packageNames) {
-        this.classes = packageNames.stream()
-                .map(Packages::findClasses)
-                .flatMap(Collection::stream)
+    public DSLConverter(final List<Class<?>> classes, final List<Container> containers) {
+        this.classes = classes.stream()
                 .collect(Collectors.toMap(Class::getSimpleName, Function.identity()));
 
-        this.containers = new StepsContainersDiscovery().discover(packageNames)
+        this.containers = containers
                 .stream()
                 .collect(Collectors.toMap(Container::name, Function.identity()));
     }
@@ -36,18 +31,24 @@ public class DSLConverter {
     public Suite convertSuite(final DSLSuite dsl) {
         final Suite.Builder suite = new Suite.Builder();
 
-        dsl.getHooks().forEach(hooksClassName -> {
-            Optional.ofNullable(classes.get(hooksClassName))
-                    .map(Classes::instantiateDefault)
-                    .map(suite::loadHooks)
-                    .orElseThrow(() -> new IllegalArgumentException("No class with name " + hooksClassName +
-                            " was found. Make sure that its package is included"));
-        });
+        if (dsl.getHooks() != null) {
+            dsl.getHooks().forEach(hooksClassName -> {
+                Optional.ofNullable(classes.get(hooksClassName))
+                        .map(Classes::instantiateDefault)
+                        .map(suite::loadHooks)
+                        .orElseThrow(() -> new IllegalArgumentException("No class with name " + hooksClassName +
+                                " was found. Make sure that its package is included"));
+            });
+        }
 
         dsl.getScenarios().values()
                 .stream()
                 .map(this::convertScenario)
                 .forEach(suite::scenario);
+
+        if (dsl.getContext() != null) {
+            dsl.getContext().forEach(suite::addToContext);
+        }
 
         return suite
                 .name(dsl.getName())

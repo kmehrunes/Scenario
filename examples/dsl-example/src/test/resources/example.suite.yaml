@@ -4,6 +4,9 @@ name: DSL suites examples
 hooks:
   - DefaultOutputHooks
 
+context:
+  baseUrl: N/A
+
 injection:
   name: Injection scenario
   description: Some argument injection
