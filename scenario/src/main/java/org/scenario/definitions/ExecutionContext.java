@@ -3,6 +3,7 @@ package org.scenario.definitions;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -37,7 +38,16 @@ public class ExecutionContext {
 
         return builder;
     }
-    
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        final ExecutionContext that = (ExecutionContext) object;
+        return Objects.equals(contextObjects, that.contextObjects) &&
+                Objects.equals(namedContextObjects, that.namedContextObjects);
+    }
+
     public static class Builder {
         private Map<Class<?>, Object> contextObjects = new HashMap<>();
         private Map<String, Object> namedContextObjects = new HashMap<>();

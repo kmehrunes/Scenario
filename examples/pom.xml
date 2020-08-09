@@ -10,17 +10,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>examples</artifactId>
-
+    <name>Scenario :: Examples</name>
     <packaging>pom</packaging>
 
     <modules>
         <module>default-runner</module>
         <module>custom-runner</module>
+        <module>dsl-example</module>
         <module>rest-example</module>
     </modules>
 
     <properties>
-        <exec-plugin.version>1.6.0</exec-plugin.version>
+        <exec-plugin.version>3.0.0</exec-plugin.version>
         <rest-assured.version>4.0.0</rest-assured.version>
     </properties>
 

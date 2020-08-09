@@ -5,6 +5,7 @@ import org.scenario.discovery.ScenarioDiscovery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class Suite {
     private final String name;
@@ -40,6 +41,34 @@ public final class Suite {
 
     public ExecutionContext executionContext() {
         return executionContext;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        final Suite suite = (Suite) object;
+        return Objects.equals(name, suite.name) &&
+                Objects.equals(description, suite.description) &&
+                Objects.equals(hooks, suite.hooks) &&
+                Objects.equals(scenarios, suite.scenarios) &&
+                Objects.equals(executionContext, suite.executionContext);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, hooks, scenarios, executionContext);
+    }
+
+    @Override
+    public String toString() {
+        return "Suite{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", hooks=" + hooks +
+                ", scenarios=" + scenarios +
+                ", executionContext=" + executionContext +
+                '}';
     }
 
     public static class Builder {

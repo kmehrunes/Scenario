@@ -1,0 +1,16 @@
+package: "org.scenario.examples"
+
+name: "Valid Suite"
+hooks:
+  - "DefaultOutputHooks"
+
+context:
+  name: "value"
+
+posts:
+  name: "User's posts"
+  description: "The flow of user posting something"
+  class: "UserScenario"
+  flow:
+    - "createUser"
+    - "publishPost"

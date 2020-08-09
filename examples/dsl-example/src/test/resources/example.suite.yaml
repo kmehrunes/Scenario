@@ -1,0 +1,21 @@
+package: org.scenario.examples # currently not used
+
+name: DSL suites examples
+hooks:
+  - DefaultOutputHooks
+
+injection:
+  name: Injection scenario
+  description: Some argument injection
+  flow:
+    - Injection::urlIsInjected
+    - Injection::scenarioContext
+
+headstrong:
+  name: Headstrong scenario
+  class: Headstrong # class is needed singe we're referencing methods
+  flow:
+    - backOff
+    - headstrong
+    - youAreWrong
+    - whereYouBelong

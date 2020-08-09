@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>custom-runner</artifactId>
-    <name>Scenario :: Examples :: Custom Runner</name>
+    <artifactId>dsl-example</artifactId>
+    <name>Scenario :: Examples :: DSL</name>
 
 </project>

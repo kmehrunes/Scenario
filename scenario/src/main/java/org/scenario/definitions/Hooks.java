@@ -3,6 +3,7 @@ package org.scenario.definitions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A container for all hooks of a suite. An instance
@@ -58,6 +59,19 @@ public final class Hooks {
 
             default: throw new IllegalStateException();
         }
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        final Hooks hooks = (Hooks) object;
+        return Objects.equals(beforeSuite, hooks.beforeSuite) &&
+                Objects.equals(afterSuite, hooks.afterSuite) &&
+                Objects.equals(beforeScenario, hooks.beforeScenario) &&
+                Objects.equals(afterScenario, hooks.afterScenario) &&
+                Objects.equals(beforeStep, hooks.beforeStep) &&
+                Objects.equals(afterStep, hooks.afterStep);
     }
 
     public static class Builder {
