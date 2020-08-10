@@ -5,9 +5,9 @@ A flexible testing framework (and library) designed for integration and end-to-e
 Here are the planned features:
 - [x] Loading resources (0.0.2)
 - [x] Timeouts and circuit breakers (0.0.2)
+- [x] Loading scenarios from YAML files
 - [ ] Template engine for resources
 - [ ] Report generation
-- [ ] Loading scenarios from YAML files
 - [ ] Maven plugin
 - [ ] Gradle plugin
 
@@ -49,7 +49,7 @@ dependencies {
 ```scala
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.kmehrunes" % "Scenario" % "0.0.1"	
+libraryDependencies += "com.github.kmehrunes" % "Scenario" % "0.0.1"
 ```
 
 ## Overview
@@ -70,6 +70,8 @@ tests
       - step l
       - step m
 ```
+
+Suites could be defined in Java (or other JVM languages) or using YAML files.
 
 ## Basic Example
 Let's take a look at a basic example with one suite and one scenario.
@@ -149,13 +151,28 @@ public void urlIsInjected(@Name("name") String url) { // you can drop the annota
 A special case of parameters are ones which need the content of a resource. Such
 parameters can be annotated with `@Resource("path-of-resource-file")`.
 
-## Circuit Breakers
-Often times you might want to stop a scenario if a step failed because the other
-steps depend on it. You can annotate such steps with `@CircuitBreaker`. For example
+## Step Execution Properties
+Beside the properties defined by a step annotation, some execution properties
+can be defined.
+
+### Timeouts
+Often times you will want to specify a timeout to prevent a step from taking too
+long. To specify a timeout you can use `@Timeout` annotation.
+```java
+@Step(description = "Create a user")
+@Timeout(unit = TimeUnit.SECONDS, value = 3)
+public void timeout() {
+    ...
+}
+```
+
+### Circuit Breakers
+You might want to stop a scenario if a step failed because the other steps depend
+on it. You can annotate such steps with `@CircuitBreaker`. For example
 ```java
 @Step(description = "Create a user")
 @CircuitBreaker // if we couldn't create a user then no need to continue
-public void createUser(final ScenarioContext context) {
+public void circuitBreaker(final ScenarioContext context) {
     ...
 }
 ```
@@ -182,6 +199,52 @@ A hook is just a method with the relevant annotation on it, and it can also be p
 public void logBeforeSuite(final Suite suite) {
     Output.info.println("Suite " + suite.name());
 }
+```
+
+## Using YAML
+You can opt for defining suites using YAML files. In that case, the steps still
+need to be defined in Java or whatever other language you're using. YAML suites
+are read from resources and their names must end in **.suits.yaml**.
+
+### Suite
+Suites have four primary properties:
+- **name**: String
+- **description**: String
+- **hooks**: Array of strings of class names, they must exist in the packages
+given to the runner
+- **context**: Just regular key-value pairs
+
+```yaml
+name: Suite name
+description: Suite description
+hooks:
+  - HookClass
+  - AnotherHookClass
+context:
+  property: value
+  another: value
+```
+
+### Scenarios
+Anything which doesn't define one of the four properties of a suite is treated
+as a scenario. A scenario can be linked to a class using the class name, or just
+use steps from a steps containers directly. A flow step which uses a container
+must follow the format `<container name>::<step name>`. They're used separately
+in the example below but they can be mixed together.
+
+```yaml
+usingContainers:
+  name: Container scenario
+  description: Given a description
+  flow:
+    - Container::firstStep
+    - Container::secondStep
+
+usingClass:
+  name: Class scenario
+  class: StepsClass
+  flow:
+    - methodName
 ```
 
 ## Using as a Library
