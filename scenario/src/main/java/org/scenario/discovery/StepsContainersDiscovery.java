@@ -65,7 +65,7 @@ public class StepsContainersDiscovery {
         return definitions.stream()
                 .map(method -> {
                     final Step step = method.getAnnotation(Step.class);
-                    final String name = step.name().isBlank() ? method.getName() : step.name();
+                    final String name = step.name().trim().isEmpty() ? method.getName() : step.name();
 
                     return new ExecutableStep(name, "", method, instance);
                 })

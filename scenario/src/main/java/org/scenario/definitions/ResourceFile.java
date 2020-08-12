@@ -26,7 +26,7 @@ public class ResourceFile {
 
     public String asString() {
         try {
-            return Files.readString(resource.toPath());
+            return new String(Files.readAllBytes(resource.toPath()));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

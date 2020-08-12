@@ -24,7 +24,7 @@ class StepsContainersDiscoveryTest {
     void discover() throws NoSuchMethodException {
         final StepsContainersDiscovery discovery = new StepsContainersDiscovery();
 
-        final List<Container> containers = discovery.discover(this.getClass().getPackageName());
+        final List<Container> containers = discovery.discover(this.getClass().getPackage().getName());
 
         assertThat(containers).hasSize(1);
         assertThat(containers.get(0).name()).isEqualTo("TestSteps");

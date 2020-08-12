@@ -3,9 +3,11 @@ package org.scenario.runners;
 import org.scenario.annotations.Step;
 import org.scenario.annotations.Timeout;
 import org.scenario.definitions.*;
+import org.scenario.exceptions.TestFailuresExceptions;
 
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -69,9 +71,14 @@ class StepRunner {
         final Timeout timeout = step.method().getAnnotation(Timeout.class);
 
         if (timeout != null) {
-            return CompletableFuture.supplyAsync(() -> executor.execute(step, executionContext))
-                    .completeOnTimeout(timeoutFailure(step, timeout), timeout.value(), timeout.unit())
-                    .join();
+            try {
+                return CompletableFuture.supplyAsync(() -> executor.execute(step, executionContext))
+                        .get(timeout.value(), timeout.unit());
+            } catch (final InterruptedException | ExecutionException e) {
+                throw new TestFailuresExceptions("Test was interrupted");
+            } catch (final TimeoutException e) {
+                return timeoutFailure(step, timeout);
+            }
         } else {
             return executor.execute(step, executionContext);
         }

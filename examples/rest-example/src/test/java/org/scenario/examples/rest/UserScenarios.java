@@ -10,6 +10,7 @@ import org.scenario.definitions.Scenario;
 import org.scenario.definitions.ScenarioContext;
 import org.scenario.definitions.ScenarioFlow;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
@@ -47,7 +48,7 @@ public class UserScenarios {
     public void createUser(final ScenarioContext context, final @Resource("create-user-request.json") String body) {
         final String baseUrl = Optional.ofNullable(context.global().get("baseUrl"))
                 .map(Object::toString)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         final String url = String.format("%s/%s", baseUrl, "users");
 
@@ -69,7 +70,7 @@ public class UserScenarios {
     public void publishPost(final ScenarioContext context, final @Resource("publish-post-request.json") String body) {
         final String baseUrl = Optional.ofNullable(context.global().get("baseUrl"))
                 .map(Object::toString)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         final String url = String.format("%s/%s", baseUrl, "posts");
 
@@ -91,7 +92,7 @@ public class UserScenarios {
     public void comment(final ScenarioContext context, final @Resource("publish-comment-request.json") String body) {
         final String baseUrl = Optional.ofNullable(context.global().get("baseUrl"))
                 .map(Object::toString)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         final String postId = (String) context.get("postId");
 
@@ -109,7 +110,7 @@ public class UserScenarios {
     public void getFeed(final ScenarioContext context) {
         final String baseUrl = Optional.ofNullable(context.global().get("baseUrl"))
                 .map(Object::toString)
-                .orElseThrow();
+                .orElseThrow(NoSuchElementException::new);
 
         final String userId = (String) context.get("userId");
 

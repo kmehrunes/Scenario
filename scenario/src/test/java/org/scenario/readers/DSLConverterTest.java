@@ -30,8 +30,8 @@ public class DSLConverterTest {
                 .setHooks(Collections.singletonList(testClass.getClass().getSimpleName()))
                 .setScenarios("Test scenario", dslScenario);
 
-        final List<Container> containers = new StepsContainersDiscovery().discover(this.getClass().getPackageName());
-        final List<Class<?>> classes = Packages.findClasses(this.getClass().getPackageName());
+        final List<Container> containers = new StepsContainersDiscovery().discover(this.getClass().getPackage().getName());
+        final List<Class<?>> classes = Packages.findClasses(this.getClass().getPackage().getName());
 
         final DSLConverter converter = new DSLConverter(classes, containers);
 
@@ -59,8 +59,8 @@ public class DSLConverterTest {
                 .setHooks(Collections.singletonList(testClass.getClass().getSimpleName()))
                 .setScenarios("Test scenario", dslScenario);
 
-        final List<Container> containers = new StepsContainersDiscovery().discover(this.getClass().getPackageName());
-        final List<Class<?>> classes = Packages.findClasses(this.getClass().getPackageName());
+        final List<Container> containers = new StepsContainersDiscovery().discover(this.getClass().getPackage().getName());
+        final List<Class<?>> classes = Packages.findClasses(this.getClass().getPackage().getName());
 
         final DSLConverter converter = new DSLConverter(classes, containers);
 

@@ -7,6 +7,6 @@ public class TestsMain {
         /*
          * This is here only to make it run in an IDE
          */
-        DefaultTestsRunner.main(new String[] { TestsMain.class.getPackageName() });
+        DefaultTestsRunner.main(new String[] { TestsMain.class.getPackage().getName() });
     }
 }
