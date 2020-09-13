@@ -11,6 +11,7 @@
 
     <artifactId>scenario</artifactId>
     <name>Scenario :: Framework</name>
+    <description>A non-opinionated and flexible integration testing framework for the JVM</description>
 
     <dependencies>
         <dependency>
