@@ -5,7 +5,7 @@ import org.scenario.annotations.AfterStep;
 import org.scenario.annotations.BeforeSuite;
 import org.scenario.definitions.ExecutableStep;
 import org.scenario.definitions.Hook;
-import org.scenario.definitions.Hooks;
+import org.scenario.definitions.MethodScope;
 
 import java.util.List;
 
@@ -29,12 +29,12 @@ class HooksFinderTest {
         final List<Hook> hooks = hooksFinder.findInObject(container);
 
         final ExecutableStep expectedBeforeSuite = new ExecutableStep("beforeSuite", "Before suite",
-                HooksContainer.class.getMethod("beforeSuite"), container);
+                HooksContainer.class.getMethod("beforeSuite"), container, MethodScope.BEFORE_SUITE);
         final ExecutableStep expectedAfterStep = new ExecutableStep("afterStep", "",
-                HooksContainer.class.getMethod("afterStep"), container);
+                HooksContainer.class.getMethod("afterStep"), container, MethodScope.AFTER_STEP);
 
         assertThat(hooks).containsExactlyInAnyOrder(
-                        new Hook(Hooks.Scope.BEFORE_SUITE, expectedBeforeSuite),
-                        new Hook(Hooks.Scope.AFTER_STEP, expectedAfterStep));
+                        new Hook(MethodScope.BEFORE_SUITE, expectedBeforeSuite),
+                        new Hook(MethodScope.AFTER_STEP, expectedAfterStep));
     }
 }

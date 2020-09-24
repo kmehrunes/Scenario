@@ -4,28 +4,39 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>scenario-parent-pom</artifactId>
-        <groupId>org.scenario</groupId>
-        <version>0.0.1</version>
+        <groupId>com.github.kmehrunes </groupId>
+        <version>0.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>examples</artifactId>
-
+    <name>Scenario :: Examples</name>
     <packaging>pom</packaging>
 
     <modules>
         <module>default-runner</module>
+        <module>custom-runner</module>
+        <module>dsl-example</module>
+        <module>rest-example</module>
     </modules>
 
     <properties>
-        <exec-plugin.version>1.6.0</exec-plugin.version>
+        <exec-plugin.version>3.0.0</exec-plugin.version>
+        <rest-assured.version>4.0.0</rest-assured.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.scenario</groupId>
+            <groupId>com.github.kmehrunes </groupId>
             <artifactId>scenario</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

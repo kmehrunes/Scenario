@@ -3,8 +3,16 @@ package org.scenario.definitions;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * The context which will be passed to all steps regardless
+ * of a scope. It contains context information added by the
+ * suite definition. It's not meant to only be queried and
+ * never updated. For mutable context parameters within
+ * scopes of a scenario use {@link ScenarioContext}.
+ */
 public class ExecutionContext {
     private final Map<Class<?>, Object> contextObjects;
     private final Map<String, Object> namedContextObjects;
@@ -30,7 +38,16 @@ public class ExecutionContext {
 
         return builder;
     }
-    
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        final ExecutionContext that = (ExecutionContext) object;
+        return Objects.equals(contextObjects, that.contextObjects) &&
+                Objects.equals(namedContextObjects, that.namedContextObjects);
+    }
+
     public static class Builder {
         private Map<Class<?>, Object> contextObjects = new HashMap<>();
         private Map<String, Object> namedContextObjects = new HashMap<>();

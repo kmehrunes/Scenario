@@ -4,23 +4,53 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.scenario</groupId>
+    <groupId>com.github.kmehrunes </groupId>
     <artifactId>scenario-parent-pom</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
+
+    <name>Scenario :: Parent</name>
+    <url>https://github.com/kmehrunes/Scenario</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Khaled Y.M.</name>
+            <email>kyasser@pm.me</email>
+            <url>https://khaledym.me</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/kmehrunes/Scenario</url>
+        <connection>scm:git:git://github.com/kmehrunes/Scenario.git</connection>
+        <developerConnection>scm:git:git@github.com:kmehrunes/Scenario.git</developerConnection>
+    </scm>
 
     <packaging>pom</packaging>
 
     <modules>
         <module>scenario</module>
-        <module>examples</module>
         <module>plugin</module>
+        <module>examples</module>
     </modules>
 
     <properties>
-        <maven.compiler.source>1.11</maven.compiler.source>
-        <maven.compiler.target>1.11</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-source-plugin.version>3.2.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
 
         <jcdp.version>4.0.1</jcdp.version>
+        <reflections.version>0.9.11</reflections.version>
+        <jackson.version>2.10.1</jackson.version>
 
         <surefire.version>3.0.0-M3</surefire.version>
         <junit.version>5.5.1</junit.version>
@@ -63,10 +93,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>11</source>
-                        <target>11</target>
+                        <source>8</source>
+                        <target>8</target>
                     </configuration>
                 </plugin>
 

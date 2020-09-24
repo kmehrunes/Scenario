@@ -1,48 +1,45 @@
 # Scenario
 A flexible testing framework (and library) designed for integration and end-to-end tests.
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.kmehrunes/scenario/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.kmehrunes/scenario)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fkmehrunes%2Fscenario%2Fbadge%3Fref%3Dmaster&style=popout)](https://actions-badge.atrox.dev/kmehrunes/scenario/goto?ref=master)
+
+## Roadmap
+Here are the planned features:
+- [x] Loading resources (0.0.2)
+- [x] Timeouts and circuit breakers (0.0.2)
+- [x] Loading scenarios from YAML files
+- [ ] Template engine for resources
+- [ ] Report generation
+- [ ] Maven plugin
+- [ ] Gradle plugin
+
 ## Getting the Framework
-The framework will be added to Maven central repository soon. In the meantime you can build it locally by running `mvn clean install` or use JitPack for that.
+Starting from version 0.0.2, the framework is available on Maven Central.
 
 ### Maven
 ```xml
-<repositories>
-  <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-  </repository>
-</repositories>
-
 <dependency>
-    <groupId>com.github.kmehrunes</groupId>
-    <artifactId>Scenario</artifactId>
-    <version>0.0.1</version>
+  <groupId>com.github.kmehrunes</groupId>
+  <artifactId>scenario</artifactId>
+  <version>0.0.2</version>
 </dependency>
 ```
 
 ### Gradle
 ```groovy
-allprojects {
-  repositories {
-    ...
-    maven { url 'https://jitpack.io' }
-  }
-}
-
-dependencies {
-        implementation 'com.github.kmehrunes:Scenario:0.0.1'
-}
+implementation 'com.github.kmehrunes:scenario:0.0.2'
 ```
 
 ### SBT
 ```scala
-resolvers += "jitpack" at "https://jitpack.io"
-
-libraryDependencies += "com.github.kmehrunes" % "Scenario" % "0.0.1"	
+libraryDependencies += "com.github.kmehrunes" % "scenario" % "0.0.2"
 ```
 
 ## Overview
-The framework has a very basic design centered around suites. A suite has a collection of scenarios, and each scenario has a set of steps. And steps can be shared across scenarios. For example:
+The framework has a very basic design centered around suites. A suite has a
+collection of scenarios, and each scenario has a set of steps. And steps can be
+shared across scenarios. For example:
 ```
 tests
   - suite A
@@ -57,6 +54,8 @@ tests
       - step l
       - step m
 ```
+
+Suites could be defined in Java (or other JVM languages) or using YAML files.
 
 ## Basic Example
 Let's take a look at a basic example with one suite and one scenario.
@@ -132,6 +131,37 @@ public void urlIsInjected(@Name("name") String url) { // you can drop the annota
 }
 ```
 
+### Resource Parameters
+A special case of parameters are ones which need the content of a resource. Such
+parameters can be annotated with `@Resource("path-of-resource-file")`.
+
+## Step Execution Properties
+Beside the properties defined by a step annotation, some execution properties
+can be defined.
+
+### Timeouts
+Often times you will want to specify a timeout to prevent a step from taking too
+long. To specify a timeout you can use `@Timeout` annotation.
+```java
+@Step(description = "Create a user")
+@Timeout(unit = TimeUnit.SECONDS, value = 3)
+public void timeout() {
+    ...
+}
+```
+
+### Circuit Breakers
+You might want to stop a scenario if a step failed because the other steps depend
+on it. You can annotate such steps with `@CircuitBreaker`. For example
+```java
+@Step(description = "Create a user")
+@CircuitBreaker // if we couldn't create a user then no need to continue
+public void circuitBreaker(final ScenarioContext context) {
+    ...
+}
+```
+**This only applies to scenario flow steps and has no effect on hooks**
+
 ## Hooks
 The framework supports adding hooks at various levels. In fact, the whole execution flow goes like this:
 ```
@@ -153,6 +183,52 @@ A hook is just a method with the relevant annotation on it, and it can also be p
 public void logBeforeSuite(final Suite suite) {
     Output.info.println("Suite " + suite.name());
 }
+```
+
+## Using YAML
+You can opt for defining suites using YAML files. In that case, the steps still
+need to be defined in Java or whatever other language you're using. YAML suites
+are read from resources and their names must end in **.suits.yaml**.
+
+### Suite
+Suites have four primary properties:
+- **name**: String
+- **description**: String
+- **hooks**: Array of strings of class names, they must exist in the packages
+given to the runner
+- **context**: Just regular key-value pairs
+
+```yaml
+name: Suite name
+description: Suite description
+hooks:
+  - HookClass
+  - AnotherHookClass
+context:
+  property: value
+  another: value
+```
+
+### Scenarios
+Anything which doesn't define one of the four properties of a suite is treated
+as a scenario. A scenario can be linked to a class using the class name, or just
+use steps from a steps containers directly. A flow step which uses a container
+must follow the format `<container name>::<step name>`. They're used separately
+in the example below but they can be mixed together.
+
+```yaml
+usingContainers:
+  name: Container scenario
+  description: Given a description
+  flow:
+    - Container::firstStep
+    - Container::secondStep
+
+usingClass:
+  name: Class scenario
+  class: StepsClass
+  flow:
+    - methodName
 ```
 
 ## Using as a Library
@@ -195,9 +271,3 @@ Maven and Gradle plugins will be provided in the future. For now you can still u
     </plugins>
 </build>
 ```
-
-## The Future
-Here are the planned features:
-* Injecting resources
-* Adding a template engine for resources
-* Report generation

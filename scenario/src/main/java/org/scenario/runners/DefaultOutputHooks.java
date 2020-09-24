@@ -4,6 +4,12 @@ import org.scenario.annotations.*;
 import org.scenario.definitions.*;
 import org.scenario.util.Output;
 
+import java.util.List;
+
+/**
+ * Hooks which log suites, scenarios, and steps. It may be
+ * omitted if a different implementation is desired.
+ */
 public class DefaultOutputHooks {
 
     @BeforeSuite
@@ -17,27 +23,29 @@ public class DefaultOutputHooks {
     }
 
     @AfterStep
-    public void logAfterStep(final ExecutableStep executableStep, final Step step, final Failures failures) {
-        if (failures == null) {
-            Output.success.println("\t\t|__ " + executableStep.name() + " - " + step.description() + " [PASSED]");
-        } else {
+    public void logAfterStep(final ExecutableStep executableStep, final Step step, final Report report) {
+        if (report.containsFailures()) {
             Output.error.println("\t\t|__ " + executableStep.name() + " - " + step.description() + " [FAILED]");
+        } else {
+            Output.success.println("\t\t|__ " + executableStep.name() + " - " + step.description() + " [PASSED]");
         }
     }
 
     @AfterSuite
-    public void reportAfterSuite(final Suite suite, final Failures failures) {
-        if (failures == null || failures.asList().isEmpty()) {
+    public void reportAfterSuite(final Suite suite, final Report report) {
+        if (report == null || !report.containsFailures()) {
             Output.success.println("Suite " + suite.name() + " finished successfully");
         } else {
-            Output.error.println("Suite " + suite.name() + " finished with failures");
+            Output.error.println("Suite " + suite.name() + " finished with report");
 
-            for (int i = 0; i < failures.asList().size(); i++) {
-                final Failure failure = failures.asList().get(i);
+            final List<StepReport> failedSteps = report.failedSteps();
+
+            for (int i = 0; i < failedSteps.size(); i++) {
+                final StepReport stepReport = failedSteps.get(i);
                 Output.error.println(String.format("[%d.] %s::%s - %s", i + 1,
-                        failure.getStep().instance().getClass().getSimpleName(), failure.getStep().method().getName(),
-                        failure.getStep().description()));
-                failure.getCause().printStackTrace();
+                        stepReport.getStep().instance().getClass().getSimpleName(), stepReport.getStep().method().getName(),
+                        stepReport.getStep().description()));
+                stepReport.getFailureCause().printStackTrace();
             }
         }
     }

@@ -3,18 +3,14 @@ package org.scenario.definitions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * A container for all hooks of a suite. An instance
+ * of this class is created only once when the suite
+ * is created and cannot be updated afterwards.
+ */
 public final class Hooks {
-    public enum Scope {
-        BEFORE_SUITE,
-        AFTER_SUITE,
-
-        BEFORE_SCENARIO,
-        AFTER_SCENARIO,
-
-        BEFORE_STEP,
-        AFTER_STEP
-    }
 
     private final List<ExecutableStep> beforeSuite;
     private final List<ExecutableStep> afterSuite;
@@ -50,7 +46,7 @@ public final class Hooks {
         );
     }
 
-    public List<ExecutableStep> executableSteps(final Hooks.Scope scope) {
+    public List<ExecutableStep> executableSteps(final MethodScope scope) {
         switch (scope) {
             case BEFORE_SUITE: return beforeSuite;
             case AFTER_SUITE: return afterSuite;
@@ -63,6 +59,19 @@ public final class Hooks {
 
             default: throw new IllegalStateException();
         }
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        final Hooks hooks = (Hooks) object;
+        return Objects.equals(beforeSuite, hooks.beforeSuite) &&
+                Objects.equals(afterSuite, hooks.afterSuite) &&
+                Objects.equals(beforeScenario, hooks.beforeScenario) &&
+                Objects.equals(afterScenario, hooks.afterScenario) &&
+                Objects.equals(beforeStep, hooks.beforeStep) &&
+                Objects.equals(afterStep, hooks.afterStep);
     }
 
     public static class Builder {
@@ -84,7 +93,7 @@ public final class Hooks {
             this.afterStep = new ArrayList<>();
         }
 
-        public Builder addHook(final Hooks.Scope scope, final ExecutableStep executableStep) {
+        public Builder addHook(final MethodScope scope, final ExecutableStep executableStep) {
             scopeList(scope).add(executableStep);
             return this;
         }
@@ -95,7 +104,7 @@ public final class Hooks {
                     beforeStep, afterStep);
         }
 
-        private List<ExecutableStep> scopeList(final Hooks.Scope scope) {
+        private List<ExecutableStep> scopeList(final MethodScope scope) {
             switch (scope) {
                 case BEFORE_SUITE: return beforeSuite;
                 case AFTER_SUITE: return afterSuite;

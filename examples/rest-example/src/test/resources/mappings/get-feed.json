@@ -1,0 +1,19 @@
+{
+  "request" : {
+    "urlPattern" : "/users/.+/feed",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "headers": {
+      "Content-Type": "application/json;utf-8"
+    },
+    "jsonBody": {
+      "results": [
+        {
+          "id": "postId"
+        }
+      ]
+    }
+  }
+}
