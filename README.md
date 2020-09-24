@@ -1,6 +1,9 @@
 # Scenario
 A flexible testing framework (and library) designed for integration and end-to-end tests.
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.kmehrunes/scenario/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.kmehrunes/scenario)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fkmehrunes%2Fscenario%2Fbadge%3Fref%3Dmaster&style=popout)](https://actions-badge.atrox.dev/kmehrunes/scenario/goto?ref=master)
+
 ## Roadmap
 Here are the planned features:
 - [x] Loading resources (0.0.2)
@@ -12,44 +15,25 @@ Here are the planned features:
 - [ ] Gradle plugin
 
 ## Getting the Framework
-The framework will be added to Maven central repository soon. In the meantime you can build it locally by running
-`mvn clean install` or use JitPack for that.
+Starting from version 0.0.2, the framework is available on Maven Central.
 
 ### Maven
 ```xml
-<repositories>
-  <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-  </repository>
-</repositories>
-
 <dependency>
-    <groupId>com.github.kmehrunes</groupId>
-    <artifactId>Scenario</artifactId>
-    <version>0.0.2</version>
+  <groupId>com.github.kmehrunes</groupId>
+  <artifactId>scenario</artifactId>
+  <version>0.0.2</version>
 </dependency>
 ```
 
 ### Gradle
 ```groovy
-allprojects {
-  repositories {
-    ...
-    maven { url 'https://jitpack.io' }
-  }
-}
-
-dependencies {
-        implementation 'com.github.kmehrunes:Scenario:0.0.1'
-}
+implementation 'com.github.kmehrunes:scenario:0.0.2'
 ```
 
 ### SBT
 ```scala
-resolvers += "jitpack" at "https://jitpack.io"
-
-libraryDependencies += "com.github.kmehrunes" % "Scenario" % "0.0.1"
+libraryDependencies += "com.github.kmehrunes" % "scenario" % "0.0.2"
 ```
 
 ## Overview
