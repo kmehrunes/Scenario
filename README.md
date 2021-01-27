@@ -22,23 +22,23 @@ Starting from version 0.0.2, the framework is available on Maven Central.
 <dependency>
   <groupId>com.github.kmehrunes</groupId>
   <artifactId>scenario</artifactId>
-  <version>0.0.2</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 
 ### Gradle
 ```groovy
-implementation 'com.github.kmehrunes:scenario:0.0.2'
+implementation 'com.github.kmehrunes:scenario:0.1.0'
 ```
 
 ### SBT
 ```scala
-libraryDependencies += "com.github.kmehrunes" % "scenario" % "0.0.2"
+libraryDependencies += "com.github.kmehrunes" % "scenario" % "0.1.0"
 ```
 
 ## Overview
 The framework has a very basic design centered around suites. A suite has a
-collection of scenarios, and each scenario has a set of steps. And steps can be
+collection of scenarios, and each scenario has a set of steps. Also steps can be
 shared across scenarios. For example:
 ```
 tests
