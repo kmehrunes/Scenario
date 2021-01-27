@@ -4,14 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>scenario-parent-pom</artifactId>
-        <groupId>com.github.kmehrunes </groupId>
-        <version>0.0.2</version>
+        <groupId>com.github.kmehrunes</groupId>
+        <version>0.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>scenario</artifactId>
     <name>Scenario :: Framework</name>
-    <description>A non-opinionated and flexible integration testing framework for the JVM</description>
 
     <dependencies>
         <dependency>
