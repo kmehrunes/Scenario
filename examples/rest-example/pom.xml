@@ -12,7 +12,7 @@
     <artifactId>rest-example</artifactId>
     <name>Scenario :: Examples :: REST with WireMock</name>
     <properties>
-        <wiremock.version>2.26.3</wiremock.version>
+        <wiremock.version>2.35.1</wiremock.version>
     </properties>
 
     <dependencies>
